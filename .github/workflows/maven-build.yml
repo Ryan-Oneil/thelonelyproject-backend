@@ -6,9 +6,6 @@ jobs:
     name: Maven Verify
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - uses: actions/setup-java@v2
         name: Setup Java environment
         with:
