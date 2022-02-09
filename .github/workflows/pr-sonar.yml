@@ -15,9 +15,8 @@ jobs:
         with:
           java-version: '16'
           distribution: 'adopt'
-          cache: maven
       - name: Maven package
-        run: mvn --update-snapshots verify
+        run: /actions-runner/apache-maven-3.8.4/bin/mvn --update-snapshots verify
       - uses: sonarsource/sonarqube-scan-action@master
         name: Sonar scan
         with:
