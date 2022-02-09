@@ -5,12 +5,16 @@ jobs:
     name: Sonar
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: debug
-        run: ls -R
-      - uses: ./.github/workflows/maven-build.yml
+      - uses: actions/setup-java@v2
+        name: Setup Java environment
+        with:
+          java-version: '16'
+          distribution: 'adopt'
+      - name: Maven verify & package
+        run: /actions-runner/apache-maven-3.8.4/bin/mvn --update-snapshots verify
       - uses: sonarsource/sonarqube-scan-action@master
         with:
           args: >
