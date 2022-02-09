@@ -6,9 +6,10 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-        run: ls -R
         with:
           fetch-depth: 0
+      - name: debug
+        run: ls -R
       - uses: ./.github/workflows/maven-build.yml
       - uses: sonarsource/sonarqube-scan-action@master
         with:
