@@ -18,15 +18,8 @@ jobs:
           architecture: x64
       - name: Maven package
         run: mvn --update-snapshots verify
-
-  scan:
-    name: Sonar Scan
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - uses: sonarsource/sonarqube-scan-action@master
+        name: Sonar scan
         with:
           args: >
             -Dsonar.projectKey=${{ github.event.repository.name }}
@@ -34,6 +27,7 @@ jobs:
             -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }}
             -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }}
             -Dsonar.scm.revision=${{ github.event.pull_request.head.sha }}
+            -Dsonar.java.binaries=**/target/classes
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
