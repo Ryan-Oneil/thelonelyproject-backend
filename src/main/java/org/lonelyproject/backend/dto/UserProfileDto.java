@@ -5,7 +5,6 @@ public final class UserProfileDto {
     private Long id;
     private String name;
     private String about;
-    private Boolean isSetup;
     private UserDto user;
 
     public UserProfileDto() {
@@ -50,11 +49,4 @@ public final class UserProfileDto {
         this.user = user;
     }
 
-    public Boolean getSetup() {
-        return isSetup;
-    }
-
-    public void setSetup(Boolean setup) {
-        isSetup = setup;
-    }
 }

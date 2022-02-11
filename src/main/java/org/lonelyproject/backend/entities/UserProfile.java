@@ -1,5 +1,6 @@
 package org.lonelyproject.backend.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,11 +22,17 @@ public class UserProfile {
 
     private String about;
 
-    @Column(columnDefinition = "boolean default false")
-    private Boolean isSetup;
-
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, cascade = CascadeType.ALL)
     private User user;
+
+    public UserProfile(String name, String about, User user) {
+        this.name = name;
+        this.about = about;
+        this.user = user;
+    }
+
+    public UserProfile() {
+    }
 
     public Long getId() {
         return id;
@@ -49,14 +56,6 @@ public class UserProfile {
 
     public void setAbout(String about) {
         this.about = about;
-    }
-
-    public Boolean getSetup() {
-        return isSetup;
-    }
-
-    public void setSetup(Boolean setup) {
-        isSetup = setup;
     }
 
     public User getUser() {

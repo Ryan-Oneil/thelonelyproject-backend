@@ -1,6 +1,8 @@
 package org.lonelyproject.backend.security;
 
+import static org.lonelyproject.backend.security.SecurityConstants.DEFAULT_USER_ROLE;
 import static org.lonelyproject.backend.security.SecurityConstants.HEADER_STRING;
+import static org.lonelyproject.backend.security.SecurityConstants.JWT_ROLE_KEY;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -41,8 +43,7 @@ public class FirebaseAuthorizationFilter extends OncePerRequestFilter {
     public static UsernamePasswordAuthenticationToken getAuth(String authHeader) throws FirebaseAuthException {
         FirebaseToken token = FirebaseAuth.getInstance().verifyIdToken(authHeader);
 
-//        String role = token.getClaims().get("role").toString();
-        String role = "ROLE_USER";
+        String role = (String) token.getClaims().getOrDefault(JWT_ROLE_KEY, DEFAULT_USER_ROLE);
         UserAuth auth = new UserAuth(token.getUid(), token.getName(), token.isEmailVerified(), role);
 
         return new UsernamePasswordAuthenticationToken(auth, null, Collections.singleton(new SimpleGrantedAuthority(role)));
