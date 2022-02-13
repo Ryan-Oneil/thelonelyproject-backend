@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.lonelyproject.backend.config.properties.BucketInfo;
 import org.lonelyproject.backend.dto.UploadedFile;
 import org.lonelyproject.backend.exception.UploadException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,10 +22,12 @@ public class BackBlazeAPI {
 
     private final B2StorageClient client;
     private final BucketInfo bucketInfo;
+    private final String cdnUrl;
 
-    public BackBlazeAPI(B2StorageClient client, BucketInfo bucketInfo) {
+    public BackBlazeAPI(B2StorageClient client, BucketInfo bucketInfo, @Value("${cdn.url}") String cdnUrl) {
         this.client = client;
         this.bucketInfo = bucketInfo;
+        this.cdnUrl = cdnUrl;
     }
 
     public String uploadToBucket(String bucketId, UploadedFile uploadedFile) {
@@ -48,6 +51,6 @@ public class BackBlazeAPI {
     public String uploadToProfileBucket(UploadedFile uploadedFile) {
         String uploadFileName = uploadToBucket(bucketInfo.avatars().id(), uploadedFile);
 
-        return "https://f001.backblazeb2.com/file/%s/%s".formatted(bucketInfo.avatars().name(), uploadFileName);
+        return "%s/%s/%s".formatted(cdnUrl, bucketInfo.avatars().name(), uploadFileName);
     }
 }
