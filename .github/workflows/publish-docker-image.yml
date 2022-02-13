@@ -1,4 +1,5 @@
 name: Build & publish Docker image
+concurrency: production
 
 on:
   push:

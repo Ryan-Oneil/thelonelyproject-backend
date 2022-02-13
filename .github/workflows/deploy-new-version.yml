@@ -1,0 +1,17 @@
+name: Deploys new release
+concurrency: production
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Call deploy webhook
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.WEBHOOK_URL }}
+          headers: '{"X-Hub": ${{ secrets.config }}}'
