@@ -22,6 +22,8 @@ public class UserProfile {
 
     private String about;
 
+    private String picture;
+
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     private User user;
 
@@ -56,6 +58,14 @@ public class UserProfile {
 
     public void setAbout(String about) {
         this.about = about;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
     public User getUser() {
