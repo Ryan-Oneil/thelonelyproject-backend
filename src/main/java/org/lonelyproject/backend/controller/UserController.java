@@ -8,7 +8,6 @@ import org.lonelyproject.backend.dto.UserProfileDto;
 import org.lonelyproject.backend.security.UserAuth;
 import org.lonelyproject.backend.service.FileService;
 import org.lonelyproject.backend.service.UserService;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,17 +30,13 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public UserProfileDto getUserProfile(Authentication authentication) {
-        UserAuth userAuth = (UserAuth) authentication.getPrincipal();
-
-        return userService.userProfileToDTO(userService.getUserProfile(userAuth.getId()));
+    public UserProfileDto getUserProfile(@AuthenticationPrincipal UserAuth auth) {
+        return userService.userProfileToDTO(userService.getUserProfile(auth.getId()));
     }
 
     @PostMapping("/register")
-    public void setUpUserProfile(@RequestBody UserProfileDto userProfile, Authentication authentication) throws FirebaseAuthException {
-        UserAuth userAuth = (UserAuth) authentication.getPrincipal();
-
-        userService.registerNewUser(userProfile, userAuth);
+    public void setUpUserProfile(@RequestBody UserProfileDto userProfile, @AuthenticationPrincipal UserAuth auth) throws FirebaseAuthException {
+        userService.registerNewUser(userProfile, auth);
     }
 
     @PostMapping("/uploadPicture")
