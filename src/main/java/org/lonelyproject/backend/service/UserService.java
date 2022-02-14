@@ -10,10 +10,13 @@ import org.lonelyproject.backend.api.BackBlazeAPI;
 import org.lonelyproject.backend.dto.UploadedFile;
 import org.lonelyproject.backend.dto.UserDto;
 import org.lonelyproject.backend.dto.UserProfileDto;
+import org.lonelyproject.backend.entities.CloudItemDetails;
+import org.lonelyproject.backend.entities.ProfilePicture;
 import org.lonelyproject.backend.entities.User;
 import org.lonelyproject.backend.entities.UserProfile;
 import org.lonelyproject.backend.enums.UserRole;
 import org.lonelyproject.backend.exception.ProfileAlreadyRegistered;
+import org.lonelyproject.backend.repository.ProfilePictureRepository;
 import org.lonelyproject.backend.repository.UserProfileRepository;
 import org.lonelyproject.backend.repository.UserRepository;
 import org.lonelyproject.backend.security.UserAuth;
@@ -25,13 +28,16 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserProfileRepository userProfileRepository;
+    private final ProfilePictureRepository pictureRepository;
     private final ModelMapper mapper;
     private final BackBlazeAPI backBlazeAPI;
 
-    public UserService(UserRepository userRepository, UserProfileRepository userProfileRepository, ModelMapper mapper,
+    public UserService(UserRepository userRepository, UserProfileRepository userProfileRepository,
+        ProfilePictureRepository pictureRepository, ModelMapper mapper,
         BackBlazeAPI backBlazeAPI) {
         this.userRepository = userRepository;
         this.userProfileRepository = userProfileRepository;
+        this.pictureRepository = pictureRepository;
         this.mapper = mapper;
         this.backBlazeAPI = backBlazeAPI;
     }
@@ -61,11 +67,23 @@ public class UserService {
     public String setUserProfilePicture(UploadedFile profilePicture, UserAuth userAuth) {
         UserProfile userProfile = getUserProfile(userAuth.getId());
 
-        String pictureUrl = backBlazeAPI.uploadToProfileBucket(profilePicture);
-        userProfile.setPicture(pictureUrl);
+        if (userProfile.getPicture() != null) {
+            deleteUserProfilePicture(userProfile);
+        }
+        ProfilePicture picture = backBlazeAPI.uploadToProfileBucket(profilePicture);
+
+        userProfile.setPicture(picture);
         userProfileRepository.save(userProfile);
 
-        return pictureUrl;
+        return picture.getUrl();
+    }
+
+    public void deleteUserProfilePicture(UserProfile userProfile) {
+        ProfilePicture picture = userProfile.getPicture();
+        CloudItemDetails details = picture.getItemDetails();
+
+        backBlazeAPI.deleteFromBucket(details.getName(), details.getExternalId());
+        pictureRepository.delete(picture);
     }
 
     public UserProfileDto userProfileToDTO(UserProfile userProfile) {

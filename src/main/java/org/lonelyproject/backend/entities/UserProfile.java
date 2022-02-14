@@ -22,7 +22,8 @@ public class UserProfile {
 
     private String about;
 
-    private String picture;
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
+    private ProfilePicture picture;
 
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     private User user;
@@ -60,12 +61,13 @@ public class UserProfile {
         this.about = about;
     }
 
-    public String getPicture() {
+    public ProfilePicture getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(ProfilePicture picture) {
         this.picture = picture;
+        this.picture.setUserProfile(this);
     }
 
     public User getUser() {
