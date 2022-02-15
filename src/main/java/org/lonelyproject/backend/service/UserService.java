@@ -48,9 +48,15 @@ public class UserService {
 
     public UserProfileDto getPublicUserProfile(String userId) {
         UserProfile userProfile = getUserProfile(userId);
-        userProfile.setUser(null);
 
         return userProfileToDTO(userProfile);
+    }
+
+    public void updateProfileAbout(String userId, String about) {
+        UserProfile userProfile = getUserProfile(userId);
+        userProfile.setAbout(about);
+
+        userProfileRepository.save(userProfile);
     }
 
     public void registerNewUser(UserProfileDto userProfileDto, UserAuth userAuth) throws FirebaseAuthException {

@@ -2,28 +2,27 @@ package org.lonelyproject.backend.dto;
 
 public final class UserProfileDto {
 
-    private Long id;
+    private String userId;
     private String name;
     private String about;
     private String profilePictureUrl;
-    private UserDto user;
 
     public UserProfileDto() {
     }
 
-    public UserProfileDto(Long id, String name, String about, UserDto user) {
-        this.id = id;
+    public UserProfileDto(String userId, String name, String about, String profilePictureUrl) {
+        this.userId = userId;
         this.name = name;
         this.about = about;
-        this.user = user;
+        this.profilePictureUrl = profilePictureUrl;
     }
 
-    public Long getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -50,12 +49,13 @@ public final class UserProfileDto {
         this.profilePictureUrl = profilePictureUrl;
     }
 
-    public UserDto getUser() {
-        return user;
+    @Override
+    public String toString() {
+        return "UserProfileDto{" +
+            "userId='" + userId + '\'' +
+            ", name='" + name + '\'' +
+            ", about='" + about + '\'' +
+            ", profilePictureUrl='" + profilePictureUrl + '\'' +
+            '}';
     }
-
-    public void setUser(UserDto user) {
-        this.user = user;
-    }
-
 }

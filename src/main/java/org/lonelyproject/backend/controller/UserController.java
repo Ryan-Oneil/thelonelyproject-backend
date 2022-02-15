@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +39,11 @@ public class UserController {
     @GetMapping("/profile/{userId}")
     public UserProfileDto getUserProfileByUserId(@PathVariable String userId) {
         return userService.getPublicUserProfile(userId);
+    }
+
+    @PutMapping("/profile/about")
+    public void updateUserProfileAbout(@RequestBody UserProfileDto userProfileDto, @AuthenticationPrincipal UserAuth auth) {
+        userService.updateProfileAbout(auth.getId(), userProfileDto.getAbout());
     }
 
     @PostMapping("/register")
