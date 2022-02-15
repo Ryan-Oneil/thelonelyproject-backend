@@ -46,6 +46,13 @@ public class UserService {
         return userProfileRepository.getUserProfileByUserId(userId).orElseThrow(() -> new RuntimeException("User doesn't exist"));
     }
 
+    public UserProfileDto getPublicUserProfile(String userId) {
+        UserProfile userProfile = getUserProfile(userId);
+        userProfile.setUser(null);
+
+        return userProfileToDTO(userProfile);
+    }
+
     public void registerNewUser(UserProfileDto userProfileDto, UserAuth userAuth) throws FirebaseAuthException {
         if (userRepository.existsById(userAuth.getId())) {
             throw new ProfileAlreadyRegistered("Profile is already setup");

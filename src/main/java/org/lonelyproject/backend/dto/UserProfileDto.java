@@ -5,6 +5,7 @@ public final class UserProfileDto {
     private Long id;
     private String name;
     private String about;
+    private String profilePictureUrl;
     private UserDto user;
 
     public UserProfileDto() {
@@ -39,6 +40,14 @@ public final class UserProfileDto {
 
     public void setAbout(String about) {
         this.about = about;
+    }
+
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 
     public UserDto getUser() {
