@@ -19,16 +19,17 @@ public class CloudItemDetails {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "container_id", nullable = false)
-    private String containerId;
+    @Column(name = "container_name", nullable = false)
+    private String containerName;
 
     @Column(nullable = false)
     private Long size;
 
-    public CloudItemDetails(String externalId, String name, String containerId, Long size) {
+
+    public CloudItemDetails(String externalId, String name, String containerName, Long size) {
         this.externalId = externalId;
         this.name = name;
-        this.containerId = containerId;
+        this.containerName = containerName;
         this.size = size;
     }
 
@@ -59,12 +60,12 @@ public class CloudItemDetails {
         this.name = name;
     }
 
-    public String getContainerId() {
-        return containerId;
+    public String getContainerName() {
+        return containerName;
     }
 
-    public void setContainerId(String containerId) {
-        this.containerId = containerId;
+    public void setContainerName(String containerName) {
+        this.containerName = containerName;
     }
 
     public Long getSize() {

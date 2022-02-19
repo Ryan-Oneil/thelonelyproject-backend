@@ -1,11 +1,15 @@
 package org.lonelyproject.backend.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class UserProfileDto {
 
     private String userId;
     private String name;
     private String about;
     private String profilePictureUrl;
+    private List<ProfileMediaDto> medias = new ArrayList<>();
 
     public UserProfileDto() {
     }
@@ -49,6 +53,14 @@ public final class UserProfileDto {
         this.profilePictureUrl = profilePictureUrl;
     }
 
+    public List<ProfileMediaDto> getMedias() {
+        return medias;
+    }
+
+    public void setMedias(List<ProfileMediaDto> medias) {
+        this.medias = medias;
+    }
+
     @Override
     public String toString() {
         return "UserProfileDto{" +
@@ -56,6 +68,7 @@ public final class UserProfileDto {
             ", name='" + name + '\'' +
             ", about='" + about + '\'' +
             ", profilePictureUrl='" + profilePictureUrl + '\'' +
+            ", gallery=" + medias +
             '}';
     }
 }

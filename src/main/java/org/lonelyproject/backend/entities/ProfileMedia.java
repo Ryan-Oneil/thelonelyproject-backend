@@ -10,20 +10,20 @@ import org.lonelyproject.backend.entities.supers.CloudItem;
 import org.lonelyproject.backend.enums.MediaType;
 
 @Entity
-public class UserProfileGalleryMedia extends CloudItem {
+public class ProfileMedia extends CloudItem {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MediaType type;
 
     @ManyToOne
-    @JoinColumn(name = "profile_id", nullable = false)
+    @JoinColumn(nullable = false)
     private UserProfile userProfile;
 
-    public UserProfileGalleryMedia() {
+    public ProfileMedia() {
     }
 
-    public UserProfileGalleryMedia(CloudItemDetails itemDetails, String url, MediaType type, UserProfile userProfile) {
+    public ProfileMedia(CloudItemDetails itemDetails, String url, MediaType type, UserProfile userProfile) {
         super(itemDetails, url);
         this.type = type;
         this.userProfile = userProfile;

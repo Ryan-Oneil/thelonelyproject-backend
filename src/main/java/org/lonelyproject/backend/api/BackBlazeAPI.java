@@ -12,9 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.lonelyproject.backend.config.properties.BucketInfo;
 import org.lonelyproject.backend.dto.UploadedFile;
 import org.lonelyproject.backend.entities.CloudItemDetails;
-import org.lonelyproject.backend.entities.ProfilePicture;
 import org.lonelyproject.backend.exception.UploadException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,12 +22,10 @@ public class BackBlazeAPI {
 
     private final B2StorageClient client;
     private final BucketInfo bucketInfo;
-    private final String cdnUrl;
 
-    public BackBlazeAPI(B2StorageClient client, BucketInfo bucketInfo, @Value("${cdn.url}") String cdnUrl) {
+    public BackBlazeAPI(B2StorageClient client, BucketInfo bucketInfo) {
         this.client = client;
         this.bucketInfo = bucketInfo;
-        this.cdnUrl = cdnUrl;
     }
 
     public B2FileVersion uploadToBucket(String bucketId, UploadedFile uploadedFile) {
@@ -39,9 +35,7 @@ public class BackBlazeAPI {
             .builder(bucketId, uploadedFile.name(), B2ContentTypes.APPLICATION_OCTET, source)
             .build();
         try {
-            final B2FileVersion cloudUpload = client.uploadSmallFile(request);
-
-            return cloudUpload;
+            return client.uploadSmallFile(request);
         } catch (B2Exception e) {
             logger.error(e);
         } finally {
@@ -50,12 +44,11 @@ public class BackBlazeAPI {
         throw new UploadException("Upload failed");
     }
 
-    public ProfilePicture uploadToProfileBucket(UploadedFile uploadedFile) {
+    public CloudItemDetails uploadToProfileBucket(UploadedFile uploadedFile) {
         B2FileVersion file = uploadToBucket(bucketInfo.avatars().id(), uploadedFile);
-        CloudItemDetails cloudItemDetails = new CloudItemDetails(file.getFileId(), file.getFileName(), bucketInfo.avatars().id(),
-            file.getContentLength());
 
-        return new ProfilePicture(cloudItemDetails, "%s/%s/%s".formatted(cdnUrl, bucketInfo.avatars().name(), cloudItemDetails.getName()));
+        return new CloudItemDetails(file.getFileId(), file.getFileName(),
+            bucketInfo.avatars().name(), file.getContentLength());
     }
 
     public void deleteFromBucket(String fileName, String fileId) {

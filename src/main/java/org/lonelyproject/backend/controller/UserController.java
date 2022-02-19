@@ -2,7 +2,9 @@ package org.lonelyproject.backend.controller;
 
 import com.google.firebase.auth.FirebaseAuthException;
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.lonelyproject.backend.dto.ProfileMediaDto;
 import org.lonelyproject.backend.dto.UploadedFile;
 import org.lonelyproject.backend.dto.UserProfileDto;
 import org.lonelyproject.backend.security.UserAuth;
@@ -56,5 +58,12 @@ public class UserController {
         UploadedFile profilePicture = fileService.handleFileUpload(request, -1).get(0);
 
         return userService.setUserProfilePicture(profilePicture, auth);
+    }
+
+    @PostMapping("/profile/gallery/upload")
+    public List<ProfileMediaDto> uploadUserMediaToProfile(HttpServletRequest request, @AuthenticationPrincipal UserAuth auth) throws IOException {
+        List<UploadedFile> files = fileService.handleFileUpload(request, -1);
+
+        return userService.addMediaToUserProfileGallery(auth.getId(), files);
     }
 }
