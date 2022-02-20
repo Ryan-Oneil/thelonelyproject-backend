@@ -19,6 +19,7 @@ import org.lonelyproject.backend.entities.UserProfile;
 import org.lonelyproject.backend.enums.MediaType;
 import org.lonelyproject.backend.enums.UserRole;
 import org.lonelyproject.backend.exception.ProfileAlreadyRegistered;
+import org.lonelyproject.backend.exception.ResourceNotFound;
 import org.lonelyproject.backend.repository.ProfileMediaRepository;
 import org.lonelyproject.backend.repository.ProfilePictureRepository;
 import org.lonelyproject.backend.repository.UserProfileRepository;
@@ -121,6 +122,16 @@ public class UserService {
         mediaRepository.saveAll(medias);
 
         return userProfileGalleryMediaToDTO(medias);
+    }
+
+    public void deleteProfileMedia(int mediaId, String userId) {
+        ProfileMedia media = mediaRepository.findByIdAndUserProfile_Id(mediaId, userId)
+            .orElseThrow(() -> new ResourceNotFound("This media doesn't exist"));
+
+        CloudItemDetails details = media.getItemDetails();
+
+        backBlazeAPI.deleteFromBucket(details.getName(), details.getExternalId());
+        mediaRepository.delete(media);
     }
 
     public String getCdnUrl(CloudItemDetails cloudItemDetails) {

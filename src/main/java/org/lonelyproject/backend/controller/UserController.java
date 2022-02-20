@@ -12,6 +12,7 @@ import org.lonelyproject.backend.service.FileService;
 import org.lonelyproject.backend.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,5 +66,10 @@ public class UserController {
         List<UploadedFile> files = fileService.handleFileUpload(request, -1);
 
         return userService.addMediaToUserProfileGallery(auth.getId(), files);
+    }
+
+    @DeleteMapping("/profile/gallery/delete/{mediaId}")
+    public void deleteProfileMedia(@PathVariable int mediaId, @AuthenticationPrincipal UserAuth auth) {
+        userService.deleteProfileMedia(mediaId, auth.getId());
     }
 }
