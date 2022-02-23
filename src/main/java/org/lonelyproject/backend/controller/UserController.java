@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.lonelyproject.backend.dto.InterestCategoryDto;
 import org.lonelyproject.backend.dto.ProfileMediaDto;
 import org.lonelyproject.backend.dto.UploadedFile;
 import org.lonelyproject.backend.dto.UserProfileDto;
@@ -71,5 +72,10 @@ public class UserController {
     @DeleteMapping("/profile/gallery/delete/{mediaId}")
     public void deleteProfileMedia(@PathVariable int mediaId, @AuthenticationPrincipal UserAuth auth) {
         userService.deleteProfileMedia(mediaId, auth.getId());
+    }
+
+    @GetMapping("/profile/interests")
+    public List<InterestCategoryDto> getInterests() {
+        return userService.getInterestsByCategory();
     }
 }

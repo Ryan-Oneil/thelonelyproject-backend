@@ -8,10 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.lonelyproject.backend.api.BackBlazeAPI;
+import org.lonelyproject.backend.dto.InterestCategoryDto;
 import org.lonelyproject.backend.dto.ProfileMediaDto;
 import org.lonelyproject.backend.dto.UploadedFile;
 import org.lonelyproject.backend.dto.UserProfileDto;
 import org.lonelyproject.backend.entities.CloudItemDetails;
+import org.lonelyproject.backend.entities.InterestCategory;
 import org.lonelyproject.backend.entities.ProfileMedia;
 import org.lonelyproject.backend.entities.ProfilePicture;
 import org.lonelyproject.backend.entities.User;
@@ -20,6 +22,7 @@ import org.lonelyproject.backend.enums.MediaType;
 import org.lonelyproject.backend.enums.UserRole;
 import org.lonelyproject.backend.exception.ProfileAlreadyRegistered;
 import org.lonelyproject.backend.exception.ResourceNotFound;
+import org.lonelyproject.backend.repository.InterestCategoryRepository;
 import org.lonelyproject.backend.repository.ProfileMediaRepository;
 import org.lonelyproject.backend.repository.ProfilePictureRepository;
 import org.lonelyproject.backend.repository.UserProfileRepository;
@@ -36,18 +39,20 @@ public class UserService {
     private final UserProfileRepository userProfileRepository;
     private final ProfilePictureRepository pictureRepository;
     private final ProfileMediaRepository mediaRepository;
+    private final InterestCategoryRepository categoryRepository;
     private final ModelMapper mapper;
     private final BackBlazeAPI backBlazeAPI;
     private final String cdnUrl;
 
     public UserService(UserRepository userRepository, UserProfileRepository userProfileRepository,
-        ProfilePictureRepository pictureRepository, ProfileMediaRepository mediaRepository, ModelMapper mapper,
-        BackBlazeAPI backBlazeAPI, @Value("${cdn.url}") String cdnUrl) {
+        ProfilePictureRepository pictureRepository, ProfileMediaRepository mediaRepository,
+        InterestCategoryRepository categoryRepository, BackBlazeAPI backBlazeAPI, @Value("${cdn.url}") String cdnUrl) {
         this.userRepository = userRepository;
         this.userProfileRepository = userProfileRepository;
         this.pictureRepository = pictureRepository;
         this.mediaRepository = mediaRepository;
-        this.mapper = mapper;
+        this.categoryRepository = categoryRepository;
+        this.mapper = new ModelMapper();
         this.backBlazeAPI = backBlazeAPI;
         this.cdnUrl = cdnUrl;
     }
@@ -121,7 +126,7 @@ public class UserService {
             }).toList();
         mediaRepository.saveAll(medias);
 
-        return userProfileGalleryMediaToDTO(medias);
+        return mapList(medias, ProfileMediaDto.class);
     }
 
     public void deleteProfileMedia(int mediaId, String userId) {
@@ -134,21 +139,24 @@ public class UserService {
         mediaRepository.delete(media);
     }
 
+    public List<InterestCategoryDto> getInterestsByCategory() {
+        List<InterestCategory> categories = categoryRepository.findAll();
+
+        return mapList(categories, InterestCategoryDto.class);
+    }
+
     public String getCdnUrl(CloudItemDetails cloudItemDetails) {
         return "%s/%s/%s".formatted(cdnUrl, cloudItemDetails.getContainerName(), cloudItemDetails.getName());
     }
 
     public UserProfileDto userProfileToDTO(UserProfile userProfile) {
-        UserProfileDto userProfileDto = mapper.map(userProfile, UserProfileDto.class);
-        List<ProfileMediaDto> medias = userProfileGalleryMediaToDTO(userProfile.getMedias());
-        userProfileDto.setMedias(medias);
-
-        return userProfileDto;
+        return mapper.map(userProfile, UserProfileDto.class);
     }
 
-    private List<ProfileMediaDto> userProfileGalleryMediaToDTO(List<ProfileMedia> medias) {
-        return medias.stream()
-            .map(profileMedia -> mapper.map(profileMedia, ProfileMediaDto.class))
+    public <S, T> List<T> mapList(List<S> source, Class<T> targetClass) {
+        return source
+            .stream()
+            .map(element -> mapper.map(element, targetClass))
             .toList();
     }
 
