@@ -4,6 +4,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
@@ -34,6 +35,9 @@ public class UserProfile {
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "userProfile")
     private List<ProfileMedia> medias;
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "userProfile", fetch = FetchType.EAGER)
+    private List<UserInterest> interests;
 
     public UserProfile(String id) {
         this.id = id;
@@ -95,5 +99,13 @@ public class UserProfile {
 
     public void setMedias(List<ProfileMedia> galleryMedia) {
         this.medias = galleryMedia;
+    }
+
+    public List<UserInterest> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(List<UserInterest> interests) {
+        this.interests = interests;
     }
 }

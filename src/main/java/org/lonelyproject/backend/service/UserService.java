@@ -29,6 +29,7 @@ import org.lonelyproject.backend.repository.UserProfileRepository;
 import org.lonelyproject.backend.repository.UserRepository;
 import org.lonelyproject.backend.security.UserAuth;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -55,6 +56,9 @@ public class UserService {
         this.mapper = new ModelMapper();
         this.backBlazeAPI = backBlazeAPI;
         this.cdnUrl = cdnUrl;
+
+        this.mapper.getConfiguration()
+            .setMatchingStrategy(MatchingStrategies.LOOSE);
     }
 
     public UserProfile getUserProfile(String userId) {
