@@ -1,11 +1,14 @@
 package org.lonelyproject.backend.entities;
 
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -14,18 +17,31 @@ import javax.persistence.Table;
 public class UserProfile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "user_id")
+    private String id;
 
     @Column(nullable = false)
     private String name;
 
     private String about;
 
-    private String picture;
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
+    private ProfilePicture picture;
 
     @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @MapsId
+    @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "userProfile")
+    private List<ProfileMedia> medias;
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "userProfile", fetch = FetchType.EAGER)
+    private List<UserInterest> interests;
+
+    public UserProfile(String id) {
+        this.id = id;
+    }
 
     public UserProfile(String name, String about, User user) {
         this.name = name;
@@ -36,11 +52,11 @@ public class UserProfile {
     public UserProfile() {
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -60,12 +76,13 @@ public class UserProfile {
         this.about = about;
     }
 
-    public String getPicture() {
+    public ProfilePicture getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(ProfilePicture picture) {
         this.picture = picture;
+        this.picture.setUserProfile(this);
     }
 
     public User getUser() {
@@ -74,5 +91,21 @@ public class UserProfile {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<ProfileMedia> getMedias() {
+        return medias;
+    }
+
+    public void setMedias(List<ProfileMedia> galleryMedia) {
+        this.medias = galleryMedia;
+    }
+
+    public List<UserInterest> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(List<UserInterest> interests) {
+        this.interests = interests;
     }
 }

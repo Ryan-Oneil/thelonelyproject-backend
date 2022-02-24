@@ -11,8 +11,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lonelyproject.backend.config.properties.BucketInfo;
 import org.lonelyproject.backend.dto.UploadedFile;
+import org.lonelyproject.backend.entities.CloudItemDetails;
 import org.lonelyproject.backend.exception.UploadException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,24 +22,20 @@ public class BackBlazeAPI {
 
     private final B2StorageClient client;
     private final BucketInfo bucketInfo;
-    private final String cdnUrl;
 
-    public BackBlazeAPI(B2StorageClient client, BucketInfo bucketInfo, @Value("${cdn.url}") String cdnUrl) {
+    public BackBlazeAPI(B2StorageClient client, BucketInfo bucketInfo) {
         this.client = client;
         this.bucketInfo = bucketInfo;
-        this.cdnUrl = cdnUrl;
     }
 
-    public String uploadToBucket(String bucketId, UploadedFile uploadedFile) {
+    public B2FileVersion uploadToBucket(String bucketId, UploadedFile uploadedFile) {
         final B2ContentSource source = B2FileContentSource.builder(uploadedFile.file()).build();
 
         B2UploadFileRequest request = B2UploadFileRequest
             .builder(bucketId, uploadedFile.name(), B2ContentTypes.APPLICATION_OCTET, source)
             .build();
         try {
-            final B2FileVersion cloudUpload = client.uploadSmallFile(request);
-
-            return cloudUpload.getFileName();
+            return client.uploadSmallFile(request);
         } catch (B2Exception e) {
             logger.error(e);
         } finally {
@@ -48,9 +44,18 @@ public class BackBlazeAPI {
         throw new UploadException("Upload failed");
     }
 
-    public String uploadToProfileBucket(UploadedFile uploadedFile) {
-        String uploadFileName = uploadToBucket(bucketInfo.avatars().id(), uploadedFile);
+    public CloudItemDetails uploadToProfileBucket(UploadedFile uploadedFile) {
+        B2FileVersion file = uploadToBucket(bucketInfo.avatars().id(), uploadedFile);
 
-        return "%s/%s/%s".formatted(cdnUrl, bucketInfo.avatars().name(), uploadFileName);
+        return new CloudItemDetails(file.getFileId(), file.getFileName(),
+            bucketInfo.avatars().name(), file.getContentLength());
+    }
+
+    public void deleteFromBucket(String fileName, String fileId) {
+        try {
+            client.deleteFileVersion(fileName, fileId);
+        } catch (B2Exception e) {
+            logger.error("Error deleting item from Backblaze bucket", e);
+        }
     }
 }

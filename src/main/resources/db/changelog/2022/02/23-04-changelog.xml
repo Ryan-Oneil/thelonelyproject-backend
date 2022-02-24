@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+  <changeSet id="1645656722153-1" author="Ryan (generated)">
+    <createTable tableName="user_interest">
+      <column name="user_profile_id" type="VARCHAR(255)">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_userinterest"/>
+      </column>
+      <column name="interest_id" type="INT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1645656722153-2" author="Ryan (generated)">
+    <addForeignKeyConstraint baseColumnNames="interest_id" baseTableName="user_interest"
+      constraintName="FK_USERINTEREST_ON_INTEREST" referencedColumnNames="id"
+      referencedTableName="interest"/>
+  </changeSet>
+  <changeSet id="1645656722153-3" author="Ryan (generated)">
+    <addForeignKeyConstraint baseColumnNames="user_profile_id" baseTableName="user_interest"
+      constraintName="FK_USERINTEREST_ON_USER_PROFILE" referencedColumnNames="user_id"
+      referencedTableName="user_profile"/>
+  </changeSet>
+
+</databaseChangeLog>

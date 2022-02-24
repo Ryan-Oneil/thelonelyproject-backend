@@ -4,7 +4,7 @@ import java.util.Optional;
 import org.lonelyproject.backend.entities.UserProfile;
 import org.springframework.data.repository.CrudRepository;
 
-public interface UserProfileRepository extends CrudRepository<UserProfile, Long> {
+public interface UserProfileRepository extends CrudRepository<UserProfile, String> {
 
     Optional<UserProfile> getUserProfileByUserId(String userId);
 }

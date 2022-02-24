@@ -1,28 +1,35 @@
 package org.lonelyproject.backend.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class UserProfileDto {
 
-    private Long id;
+    private String userId;
     private String name;
     private String about;
-    private UserDto user;
+    private String profilePictureUrl;
+    private List<ProfileMediaDto> medias = new ArrayList<>();
+    private List<InterestDto> interests = new ArrayList<>();
+    private List<String> prompts = new ArrayList<>();
+    private List<String> spotifyArtists = new ArrayList<>();
 
     public UserProfileDto() {
     }
 
-    public UserProfileDto(Long id, String name, String about, UserDto user) {
-        this.id = id;
+    public UserProfileDto(String userId, String name, String about, String profilePictureUrl) {
+        this.userId = userId;
         this.name = name;
         this.about = about;
-        this.user = user;
+        this.profilePictureUrl = profilePictureUrl;
     }
 
-    public Long getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -41,12 +48,55 @@ public final class UserProfileDto {
         this.about = about;
     }
 
-    public UserDto getUser() {
-        return user;
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
     }
 
-    public void setUser(UserDto user) {
-        this.user = user;
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 
+    public List<ProfileMediaDto> getMedias() {
+        return medias;
+    }
+
+    public void setMedias(List<ProfileMediaDto> medias) {
+        this.medias = medias;
+    }
+
+    public List<InterestDto> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(List<InterestDto> interests) {
+        this.interests = interests;
+    }
+
+    public List<String> getPrompts() {
+        return prompts;
+    }
+
+    public void setPrompts(List<String> prompts) {
+        this.prompts = prompts;
+    }
+
+    public List<String> getSpotifyArtists() {
+        return spotifyArtists;
+    }
+
+    public void setSpotifyArtists(List<String> spotifyArtists) {
+        this.spotifyArtists = spotifyArtists;
+    }
+
+    @Override
+    public String toString() {
+        return "UserProfileDto{" +
+            "userId='" + userId + '\'' +
+            ", name='" + name + '\'' +
+            ", about='" + about + '\'' +
+            ", profilePictureUrl='" + profilePictureUrl + '\'' +
+            ", medias=" + medias +
+            ", interests=" + interests +
+            '}';
+    }
 }
