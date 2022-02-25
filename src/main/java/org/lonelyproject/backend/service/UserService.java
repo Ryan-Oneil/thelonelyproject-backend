@@ -9,24 +9,30 @@ import java.util.List;
 import java.util.Map;
 import org.lonelyproject.backend.api.BackBlazeAPI;
 import org.lonelyproject.backend.dto.InterestCategoryDto;
+import org.lonelyproject.backend.dto.InterestDto;
 import org.lonelyproject.backend.dto.ProfileMediaDto;
+import org.lonelyproject.backend.dto.PromptDto;
 import org.lonelyproject.backend.dto.UploadedFile;
 import org.lonelyproject.backend.dto.UserProfileDto;
 import org.lonelyproject.backend.entities.CloudItemDetails;
+import org.lonelyproject.backend.entities.Interest;
 import org.lonelyproject.backend.entities.InterestCategory;
 import org.lonelyproject.backend.entities.ProfileMedia;
 import org.lonelyproject.backend.entities.ProfilePicture;
+import org.lonelyproject.backend.entities.Prompt;
 import org.lonelyproject.backend.entities.User;
+import org.lonelyproject.backend.entities.UserInterest;
 import org.lonelyproject.backend.entities.UserProfile;
+import org.lonelyproject.backend.entities.UserPrompt;
+import org.lonelyproject.backend.entities.supers.ProfileTrait;
 import org.lonelyproject.backend.enums.MediaType;
 import org.lonelyproject.backend.enums.UserRole;
 import org.lonelyproject.backend.exception.ProfileAlreadyRegistered;
 import org.lonelyproject.backend.exception.ResourceNotFound;
-import org.lonelyproject.backend.repository.InterestCategoryRepository;
 import org.lonelyproject.backend.repository.ProfileMediaRepository;
 import org.lonelyproject.backend.repository.ProfilePictureRepository;
+import org.lonelyproject.backend.repository.ProfileTraitRepository;
 import org.lonelyproject.backend.repository.UserProfileRepository;
-import org.lonelyproject.backend.repository.UserRepository;
 import org.lonelyproject.backend.security.UserAuth;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -36,23 +42,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
     private final UserProfileRepository userProfileRepository;
     private final ProfilePictureRepository pictureRepository;
     private final ProfileMediaRepository mediaRepository;
-    private final InterestCategoryRepository categoryRepository;
+    private final ProfileTraitRepository<ProfileTrait> profileTraitRepository;
     private final ModelMapper mapper;
     private final BackBlazeAPI backBlazeAPI;
     private final String cdnUrl;
 
-    public UserService(UserRepository userRepository, UserProfileRepository userProfileRepository,
-        ProfilePictureRepository pictureRepository, ProfileMediaRepository mediaRepository,
-        InterestCategoryRepository categoryRepository, BackBlazeAPI backBlazeAPI, @Value("${cdn.url}") String cdnUrl) {
-        this.userRepository = userRepository;
+    public UserService(UserProfileRepository userProfileRepository, ProfilePictureRepository pictureRepository,
+        ProfileMediaRepository mediaRepository, ProfileTraitRepository<ProfileTrait> profileTraitRepository, BackBlazeAPI backBlazeAPI,
+        @Value("${cdn.url}") String cdnUrl) {
         this.userProfileRepository = userProfileRepository;
         this.pictureRepository = pictureRepository;
         this.mediaRepository = mediaRepository;
-        this.categoryRepository = categoryRepository;
+        this.profileTraitRepository = profileTraitRepository;
         this.mapper = new ModelMapper();
         this.backBlazeAPI = backBlazeAPI;
         this.cdnUrl = cdnUrl;
@@ -81,7 +85,7 @@ public class UserService {
     }
 
     public void registerNewUser(UserProfileDto userProfileDto, UserAuth userAuth) throws FirebaseAuthException {
-        if (userRepository.existsById(userAuth.getId())) {
+        if (userProfileRepository.existsById(userAuth.getId())) {
             throw new ProfileAlreadyRegistered("Profile is already setup");
         }
         User user = new User(userAuth.getId(), userAuth.getUsername(), UserRole.ROLE_USER);
@@ -144,9 +148,41 @@ public class UserService {
     }
 
     public List<InterestCategoryDto> getInterestsByCategory() {
-        List<InterestCategory> categories = categoryRepository.findAll();
+        List<InterestCategory> categories = profileTraitRepository.findAllInterestCategories();
 
         return mapList(categories, InterestCategoryDto.class);
+    }
+
+    public void addInterestToUserProfile(String userId, InterestDto interestDto) {
+        Interest interest = getInterestById(interestDto.getId());
+        UserProfile userProfile = getUserProfile(userId);
+        userProfile.addInterest(new UserInterest(userProfile, interest));
+
+        userProfileRepository.save(userProfile);
+    }
+
+    public void deleteUserProfileInterest(String userId, int interestId) {
+        profileTraitRepository.deleteUserInterestById(interestId, userId);
+    }
+
+    public void addPromptToUserProfile(String userId, PromptDto promptDto) {
+        Prompt prompt = getPromptById(promptDto.getPromptId());
+        UserProfile userProfile = getUserProfile(userId);
+        userProfile.addPrompt(new UserPrompt(userProfile, promptDto.getText(), prompt));
+
+        userProfileRepository.save(userProfile);
+    }
+
+    public void deleteUserProfilePrompt(String userId, int promptId) {
+        profileTraitRepository.deleteUserPromptById(promptId, userId);
+    }
+
+    public Prompt getPromptById(int id) {
+        return profileTraitRepository.getPromptById(id).orElseThrow(() -> new ResourceNotFound("Invalid Prompt"));
+    }
+
+    public Interest getInterestById(int id) {
+        return profileTraitRepository.getInterestById(id).orElseThrow(() -> new ResourceNotFound("Invalid Interest"));
     }
 
     public String getCdnUrl(CloudItemDetails cloudItemDetails) {

@@ -5,14 +5,14 @@ import java.io.Serializable;
 public class InterestDto implements Serializable {
 
     private int id;
-    private String description;
+    private String name;
 
     public InterestDto() {
     }
 
     public InterestDto(int id, String name) {
         this.id = id;
-        this.description = name;
+        this.name = name;
     }
 
     public int getId() {
@@ -23,18 +23,18 @@ public class InterestDto implements Serializable {
         this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public String getName() {
+        return name;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" +
             "id = " + id + ", " +
-            "name = " + description + ")";
+            "name = " + name + ")";
     }
 }
