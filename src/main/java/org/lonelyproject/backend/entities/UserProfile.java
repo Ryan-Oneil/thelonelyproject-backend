@@ -11,6 +11,8 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "user_profile")
@@ -36,8 +38,13 @@ public class UserProfile {
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "userProfile")
     private List<ProfileMedia> medias;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "userProfile", fetch = FetchType.EAGER)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "userProfile")
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<UserInterest> interests;
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "userProfile", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<UserPrompt> prompts;
 
     public UserProfile(String id) {
         this.id = id;
@@ -105,7 +112,17 @@ public class UserProfile {
         return interests;
     }
 
-    public void setInterests(List<UserInterest> interests) {
-        this.interests = interests;
+    public void addInterest(UserInterest interest) {
+        this.getInterests().add(interest);
+    }
+
+    public List<UserPrompt> getPrompts() {
+        return prompts;
+    }
+
+    public void addPrompt(UserPrompt prompt) {
+        prompt.setUserProfile(this);
+
+        this.getPrompts().add(prompt);
     }
 }

@@ -1,5 +1,6 @@
 package org.lonelyproject.backend.entities.supers;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class ProfileTrait {
+public class ProfileTrait implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

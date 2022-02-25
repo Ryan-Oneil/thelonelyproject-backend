@@ -9,15 +9,21 @@ import java.util.List;
 import java.util.Map;
 import org.lonelyproject.backend.api.BackBlazeAPI;
 import org.lonelyproject.backend.dto.InterestCategoryDto;
+import org.lonelyproject.backend.dto.InterestDto;
 import org.lonelyproject.backend.dto.ProfileMediaDto;
+import org.lonelyproject.backend.dto.PromptDto;
 import org.lonelyproject.backend.dto.UploadedFile;
 import org.lonelyproject.backend.dto.UserProfileDto;
 import org.lonelyproject.backend.entities.CloudItemDetails;
+import org.lonelyproject.backend.entities.Interest;
 import org.lonelyproject.backend.entities.InterestCategory;
 import org.lonelyproject.backend.entities.ProfileMedia;
 import org.lonelyproject.backend.entities.ProfilePicture;
+import org.lonelyproject.backend.entities.Prompt;
 import org.lonelyproject.backend.entities.User;
+import org.lonelyproject.backend.entities.UserInterest;
 import org.lonelyproject.backend.entities.UserProfile;
+import org.lonelyproject.backend.entities.UserPrompt;
 import org.lonelyproject.backend.entities.supers.ProfileTrait;
 import org.lonelyproject.backend.enums.MediaType;
 import org.lonelyproject.backend.enums.UserRole;
@@ -145,6 +151,38 @@ public class UserService {
         List<InterestCategory> categories = profileTraitRepository.findAllInterestCategories();
 
         return mapList(categories, InterestCategoryDto.class);
+    }
+
+    public void addInterestToUserProfile(String userId, InterestDto interestDto) {
+        Interest interest = getInterestById(interestDto.getId());
+        UserProfile userProfile = getUserProfile(userId);
+        userProfile.addInterest(new UserInterest(userProfile, interest));
+
+        userProfileRepository.save(userProfile);
+    }
+
+    public void deleteUserProfileInterest(String userId, int interestId) {
+        profileTraitRepository.deleteUserInterestById(interestId, userId);
+    }
+
+    public void addPromptToUserProfile(String userId, PromptDto promptDto) {
+        Prompt prompt = getPromptById(promptDto.getPromptId());
+        UserProfile userProfile = getUserProfile(userId);
+        userProfile.addPrompt(new UserPrompt(userProfile, promptDto.getText(), prompt));
+
+        userProfileRepository.save(userProfile);
+    }
+
+    public void deleteUserProfilePrompt(String userId, int promptId) {
+        profileTraitRepository.deleteUserPromptById(promptId, userId);
+    }
+
+    public Prompt getPromptById(int id) {
+        return profileTraitRepository.getPromptById(id).orElseThrow(() -> new ResourceNotFound("Invalid Prompt"));
+    }
+
+    public Interest getInterestById(int id) {
+        return profileTraitRepository.getInterestById(id).orElseThrow(() -> new ResourceNotFound("Invalid Interest"));
     }
 
     public String getCdnUrl(CloudItemDetails cloudItemDetails) {

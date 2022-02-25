@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.lonelyproject.backend.dto.InterestCategoryDto;
+import org.lonelyproject.backend.dto.InterestDto;
 import org.lonelyproject.backend.dto.ProfileMediaDto;
+import org.lonelyproject.backend.dto.PromptDto;
 import org.lonelyproject.backend.dto.UploadedFile;
 import org.lonelyproject.backend.dto.UserProfileDto;
 import org.lonelyproject.backend.security.UserAuth;
@@ -77,5 +79,20 @@ public class UserController {
     @GetMapping("/profile/interests")
     public List<InterestCategoryDto> getInterests() {
         return userService.getInterestsByCategory();
+    }
+
+    @PostMapping("/profile/interest")
+    public void addInterestToProfile(@RequestBody InterestDto interestDto, @AuthenticationPrincipal UserAuth auth) {
+        userService.addInterestToUserProfile(auth.getId(), interestDto);
+    }
+
+    @DeleteMapping("/profile/interest")
+    public void deleteInterestFromProfile(@RequestBody InterestDto interestDto, @AuthenticationPrincipal UserAuth auth) {
+        userService.deleteUserProfileInterest(auth.getId(), interestDto.getId());
+    }
+
+    @PostMapping("/profile/prompt")
+    public void addPromptToProfile(@RequestBody PromptDto promptDto, @AuthenticationPrincipal UserAuth auth) {
+        userService.deleteUserProfilePrompt(auth.getId(), promptDto.getPromptId());
     }
 }

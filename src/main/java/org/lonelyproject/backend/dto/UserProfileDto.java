@@ -11,7 +11,7 @@ public final class UserProfileDto {
     private String profilePictureUrl;
     private List<ProfileMediaDto> medias = new ArrayList<>();
     private List<InterestDto> interests = new ArrayList<>();
-    private List<String> prompts = new ArrayList<>();
+    private List<PromptDto> prompts = new ArrayList<>();
     private List<String> spotifyArtists = new ArrayList<>();
 
     public UserProfileDto() {
@@ -72,11 +72,11 @@ public final class UserProfileDto {
         this.interests = interests;
     }
 
-    public List<String> getPrompts() {
+    public List<PromptDto> getPrompts() {
         return prompts;
     }
 
-    public void setPrompts(List<String> prompts) {
+    public void setPrompts(List<PromptDto> prompts) {
         this.prompts = prompts;
     }
 
