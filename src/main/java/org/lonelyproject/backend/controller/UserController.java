@@ -86,9 +86,9 @@ public class UserController {
         userService.addInterestToUserProfile(auth.getId(), interestDto);
     }
 
-    @DeleteMapping("/profile/interest")
-    public void deleteInterestFromProfile(@RequestBody InterestDto interestDto, @AuthenticationPrincipal UserAuth auth) {
-        userService.deleteUserProfileInterest(auth.getId(), interestDto.getId());
+    @DeleteMapping("/profile/interest/{interestId}")
+    public void deleteInterestFromProfile(@PathVariable Integer interestId, @AuthenticationPrincipal UserAuth auth) {
+        userService.deleteUserProfileInterest(auth.getId(), interestId);
     }
 
     @PostMapping("/profile/prompt")

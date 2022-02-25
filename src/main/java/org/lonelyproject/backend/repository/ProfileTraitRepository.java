@@ -2,6 +2,7 @@ package org.lonelyproject.backend.repository;
 
 import java.util.List;
 import java.util.Optional;
+import javax.transaction.Transactional;
 import org.lonelyproject.backend.entities.Interest;
 import org.lonelyproject.backend.entities.InterestCategory;
 import org.lonelyproject.backend.entities.Prompt;
@@ -18,6 +19,7 @@ public interface ProfileTraitRepository<T extends ProfileTrait> extends CrudRepo
     @Query("select i from Interest i where i.id = ?1")
     Optional<Interest> getInterestById(int id);
 
+    @Transactional
     @Modifying
     @Query("delete from UserInterest ui where ui.profileTraitId.traitId = ?1 and ui.profileTraitId.userProfileId = ?2")
     void deleteUserInterestById(int interestId, String userId);
@@ -28,6 +30,7 @@ public interface ProfileTraitRepository<T extends ProfileTrait> extends CrudRepo
     @Query("select p from Prompt p where p.id = ?1")
     Optional<Prompt> getPromptById(int id);
 
+    @Transactional
     @Modifying
     @Query("delete from UserPrompt up where up.profileTraitId.traitId = ?1 and up.profileTraitId.userProfileId = ?2")
     void deleteUserPromptById(int promptId, String userId);
