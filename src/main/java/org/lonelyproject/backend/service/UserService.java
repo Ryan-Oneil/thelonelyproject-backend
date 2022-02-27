@@ -1,6 +1,8 @@
 package org.lonelyproject.backend.service;
 
 import static org.lonelyproject.backend.security.SecurityConstants.JWT_ROLE_KEY;
+import static org.lonelyproject.backend.util.ClassMapperUtil.mapClass;
+import static org.lonelyproject.backend.util.ClassMapperUtil.mapList;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -34,8 +36,6 @@ import org.lonelyproject.backend.repository.ProfilePictureRepository;
 import org.lonelyproject.backend.repository.ProfileTraitRepository;
 import org.lonelyproject.backend.repository.UserProfileRepository;
 import org.lonelyproject.backend.security.UserAuth;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +46,6 @@ public class UserService {
     private final ProfilePictureRepository pictureRepository;
     private final ProfileMediaRepository mediaRepository;
     private final ProfileTraitRepository<ProfileTrait> profileTraitRepository;
-    private final ModelMapper mapper;
     private final BackBlazeAPI backBlazeAPI;
     private final String cdnUrl;
 
@@ -57,12 +56,8 @@ public class UserService {
         this.pictureRepository = pictureRepository;
         this.mediaRepository = mediaRepository;
         this.profileTraitRepository = profileTraitRepository;
-        this.mapper = new ModelMapper();
         this.backBlazeAPI = backBlazeAPI;
         this.cdnUrl = cdnUrl;
-
-        this.mapper.getConfiguration()
-            .setMatchingStrategy(MatchingStrategies.LOOSE);
     }
 
     public UserProfile getUserProfile(String userId) {
@@ -185,19 +180,27 @@ public class UserService {
         return profileTraitRepository.getInterestById(id).orElseThrow(() -> new ResourceNotFound("Invalid Interest"));
     }
 
+    public List<PromptDto> getPrompts() {
+        return mapList(profileTraitRepository.findAllPrompts(), PromptDto.class);
+    }
+
+    public void editUserPrompt(String userId, PromptDto promptDto) {
+        UserProfile userProfile = getUserProfile(userId);
+        UserPrompt prompt = userProfile.getPrompts().stream()
+            .filter(userPrompt -> userPrompt.getPrompt().getId() == promptDto.getPromptId())
+            .findFirst()
+            .orElseThrow(() -> new ResourceNotFound("You don't have this prompt"));
+        prompt.setText(promptDto.getText());
+
+        userProfileRepository.save(userProfile);
+    }
+
     public String getCdnUrl(CloudItemDetails cloudItemDetails) {
         return "%s/%s/%s".formatted(cdnUrl, cloudItemDetails.getContainerName(), cloudItemDetails.getName());
     }
 
     public UserProfileDto userProfileToDTO(UserProfile userProfile) {
-        return mapper.map(userProfile, UserProfileDto.class);
+        return mapClass(userProfile, UserProfileDto.class);
     }
-
-    public <S, T> List<T> mapList(List<S> source, Class<T> targetClass) {
-        return source
-            .stream()
-            .map(element -> mapper.map(element, targetClass))
-            .toList();
-    }
-
+    
 }
