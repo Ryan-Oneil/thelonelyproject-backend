@@ -37,11 +37,6 @@ public class UserController {
         this.fileService = fileService;
     }
 
-    @GetMapping("/profile")
-    public UserProfileDto getUserProfile(@AuthenticationPrincipal UserAuth auth) {
-        return userService.userProfileToDTO(userService.getUserProfile(auth.getId()));
-    }
-
     @GetMapping("/profile/{userId}")
     public UserProfileDto getUserProfileByUserId(@PathVariable String userId) {
         return userService.getPublicUserProfile(userId);
@@ -93,6 +88,21 @@ public class UserController {
 
     @PostMapping("/profile/prompt")
     public void addPromptToProfile(@RequestBody PromptDto promptDto, @AuthenticationPrincipal UserAuth auth) {
-        userService.deleteUserProfilePrompt(auth.getId(), promptDto.getPromptId());
+        userService.addPromptToUserProfile(auth.getId(), promptDto);
+    }
+
+    @DeleteMapping("/profile/prompt/{promptId}")
+    public void deletePromptFromProfile(@PathVariable Integer promptId, @AuthenticationPrincipal UserAuth auth) {
+        userService.deleteUserProfilePrompt(auth.getId(), promptId);
+    }
+
+    @PutMapping("/profile/prompt")
+    public void editUserPrompt(@RequestBody PromptDto promptDto, @AuthenticationPrincipal UserAuth auth) {
+        userService.editUserPrompt(auth.getId(), promptDto);
+    }
+
+    @GetMapping("/profile/prompts")
+    public List<PromptDto> getPrompts() {
+        return userService.getPrompts();
     }
 }
