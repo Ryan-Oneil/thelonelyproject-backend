@@ -3,6 +3,7 @@ package org.lonelyproject.backend.service;
 import static org.lonelyproject.backend.security.SecurityConstants.JWT_ROLE_KEY;
 import static org.lonelyproject.backend.util.ClassMapperUtil.mapClass;
 import static org.lonelyproject.backend.util.ClassMapperUtil.mapList;
+import static org.lonelyproject.backend.util.ClassMapperUtil.mapListIgnoreLazyCollection;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -12,6 +13,7 @@ import java.util.Map;
 import org.lonelyproject.backend.api.BackBlazeAPI;
 import org.lonelyproject.backend.dto.InterestCategoryDto;
 import org.lonelyproject.backend.dto.InterestDto;
+import org.lonelyproject.backend.dto.ProfileConnectionDto;
 import org.lonelyproject.backend.dto.ProfileMediaDto;
 import org.lonelyproject.backend.dto.PromptDto;
 import org.lonelyproject.backend.dto.UploadedFile;
@@ -19,6 +21,7 @@ import org.lonelyproject.backend.dto.UserProfileDto;
 import org.lonelyproject.backend.entities.CloudItemDetails;
 import org.lonelyproject.backend.entities.Interest;
 import org.lonelyproject.backend.entities.InterestCategory;
+import org.lonelyproject.backend.entities.ProfileConnection;
 import org.lonelyproject.backend.entities.ProfileMedia;
 import org.lonelyproject.backend.entities.ProfilePicture;
 import org.lonelyproject.backend.entities.Prompt;
@@ -27,9 +30,10 @@ import org.lonelyproject.backend.entities.UserInterest;
 import org.lonelyproject.backend.entities.UserProfile;
 import org.lonelyproject.backend.entities.UserPrompt;
 import org.lonelyproject.backend.entities.supers.ProfileTrait;
+import org.lonelyproject.backend.enums.ConnectionStatus;
 import org.lonelyproject.backend.enums.MediaType;
 import org.lonelyproject.backend.enums.UserRole;
-import org.lonelyproject.backend.exception.ProfileAlreadyRegistered;
+import org.lonelyproject.backend.exception.ProfileException;
 import org.lonelyproject.backend.exception.ResourceNotFound;
 import org.lonelyproject.backend.repository.ProfileMediaRepository;
 import org.lonelyproject.backend.repository.ProfilePictureRepository;
@@ -66,10 +70,14 @@ public class UserService {
 
     public UserProfileDto getPublicUserProfile(String userId) {
         UserProfile userProfile = getUserProfile(userId);
-        List<ProfileMedia> medias = mediaRepository.getAllByUserProfile_IdOrderByIdDesc(userId);
-        userProfile.setMedias(medias);
 
         return userProfileToDTO(userProfile);
+    }
+
+    public List<UserProfileDto> getProfiles() {
+        List<UserProfile> profiles = userProfileRepository.findAll();
+
+        return mapListIgnoreLazyCollection(profiles, UserProfileDto.class);
     }
 
     public void updateProfileAbout(String userId, String about) {
@@ -81,7 +89,7 @@ public class UserService {
 
     public void registerNewUser(UserProfileDto userProfileDto, UserAuth userAuth) throws FirebaseAuthException {
         if (userProfileRepository.existsById(userAuth.getId())) {
-            throw new ProfileAlreadyRegistered("Profile is already setup");
+            throw new ProfileException("Profile is already setup");
         }
         User user = new User(userAuth.getId(), userAuth.getUsername(), UserRole.ROLE_USER);
         UserProfile userProfile = new UserProfile(userProfileDto.getName(), userProfileDto.getAbout(), user);
@@ -195,6 +203,29 @@ public class UserService {
         userProfileRepository.save(userProfile);
     }
 
+    public void sendConnectionRequest(String connectorId, String targetId) {
+        if (userProfileRepository.hasConnection(connectorId, targetId)) {
+            throw new ProfileException("You already have an established or pending connection with this person");
+        }
+        UserProfile targetProfile = getUserProfile(targetId);
+
+        ProfileConnection profileConnection = new ProfileConnection(ConnectionStatus.PENDING, new UserProfile(connectorId), targetProfile);
+        targetProfile.addConnection(profileConnection);
+
+        userProfileRepository.save(targetProfile);
+    }
+
+    public List<ProfileConnectionDto> getPendingConnections(String userId) {
+        UserProfile userProfile = getUserProfile(userId);
+        List<ProfileConnection> connections = userProfile.getConnections();
+
+        connections = connections.stream()
+            .filter(connection -> !connection.getTarget().getId().equals(userId))
+            .toList();
+
+        return mapListIgnoreLazyCollection(connections, ProfileConnectionDto.class);
+    }
+
     public String getCdnUrl(CloudItemDetails cloudItemDetails) {
         return "%s/%s/%s".formatted(cdnUrl, cloudItemDetails.getContainerName(), cloudItemDetails.getName());
     }
@@ -202,5 +233,5 @@ public class UserService {
     public UserProfileDto userProfileToDTO(UserProfile userProfile) {
         return mapClass(userProfile, UserProfileDto.class);
     }
-    
+
 }
