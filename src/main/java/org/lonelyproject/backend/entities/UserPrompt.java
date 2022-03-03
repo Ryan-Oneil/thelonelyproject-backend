@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import org.lonelyproject.backend.entities.supers.ProfileTraitId;
+import org.lonelyproject.backend.entities.compositeids.ProfileTraitId;
 import org.lonelyproject.backend.entities.supers.ProfileTraitRelation;
 
 @Entity

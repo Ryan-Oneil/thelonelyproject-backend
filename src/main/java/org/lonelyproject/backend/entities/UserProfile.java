@@ -4,7 +4,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
@@ -38,13 +37,17 @@ public class UserProfile {
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "userProfile")
     private List<ProfileMedia> medias;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "userProfile")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "userProfile")
     @Fetch(value = FetchMode.SUBSELECT)
     private List<UserInterest> interests;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "userProfile", fetch = FetchType.EAGER)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "userProfile")
     @Fetch(value = FetchMode.SUBSELECT)
     private List<UserPrompt> prompts;
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<ProfileConnection> connections;
 
     public UserProfile(String id) {
         this.id = id;
@@ -124,5 +127,17 @@ public class UserProfile {
         prompt.setUserProfile(this);
 
         this.getPrompts().add(prompt);
+    }
+
+    public List<ProfileConnection> getConnections() {
+        return connections;
+    }
+
+    public void addConnection(ProfileConnection connection) {
+        this.getConnections().add(connection);
+    }
+
+    public void setConnections(List<ProfileConnection> connections) {
+        this.connections = connections;
     }
 }

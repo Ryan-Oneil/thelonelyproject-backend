@@ -42,6 +42,16 @@ public class UserController {
         return userService.getPublicUserProfile(userId);
     }
 
+    @PostMapping("/profile/{userId}/connect")
+    public void connectToUser(@PathVariable String userId, @AuthenticationPrincipal UserAuth auth) {
+        userService.sendConnectionRequest(auth.getId(), userId);
+    }
+
+    @GetMapping("/profiles")
+    public List<UserProfileDto> getUserProfiles() {
+        return userService.getProfiles();
+    }
+
     @PutMapping("/profile/about")
     public void updateUserProfileAbout(@RequestBody UserProfileDto userProfileDto, @AuthenticationPrincipal UserAuth auth) {
         userService.updateProfileAbout(auth.getId(), userProfileDto.getAbout());
