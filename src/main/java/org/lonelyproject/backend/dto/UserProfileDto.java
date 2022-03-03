@@ -1,9 +1,10 @@
 package org.lonelyproject.backend.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class UserProfileDto {
+public final class UserProfileDto implements Serializable {
 
     private String userId;
     private String name;
@@ -97,6 +98,8 @@ public final class UserProfileDto {
             ", profilePictureUrl='" + profilePictureUrl + '\'' +
             ", medias=" + medias +
             ", interests=" + interests +
+            ", prompts=" + prompts +
+            ", spotifyArtists=" + spotifyArtists +
             '}';
     }
 }

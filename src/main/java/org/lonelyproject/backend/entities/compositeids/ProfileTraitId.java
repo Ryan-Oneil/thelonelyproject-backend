@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.entities.supers;
+package org.lonelyproject.backend.entities.compositeids;
 
 import java.io.Serializable;
 import java.util.Objects;

@@ -5,6 +5,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import org.lonelyproject.backend.entities.UserProfile;
+import org.lonelyproject.backend.entities.compositeids.ProfileTraitId;
 
 @MappedSuperclass
 public class ProfileTraitRelation {
