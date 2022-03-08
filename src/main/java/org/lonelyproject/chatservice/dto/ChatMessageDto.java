@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class ChatMessageDto implements Serializable {
 
-    private int id;
+    private Integer id;
     private String senderId;
     private String content;
     private Date timestamp;
@@ -13,7 +13,7 @@ public class ChatMessageDto implements Serializable {
     public ChatMessageDto() {
     }
 
-    public ChatMessageDto(int id, String senderId, String content, Date timestamp) {
+    public ChatMessageDto(Integer id, String senderId, String content, Date timestamp) {
         this.id = id;
         this.senderId = senderId;
         this.content = content;
@@ -24,7 +24,7 @@ public class ChatMessageDto implements Serializable {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

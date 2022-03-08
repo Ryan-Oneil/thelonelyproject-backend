@@ -54,4 +54,12 @@ public class ParticipantId implements Serializable {
     public int hashCode() {
         return Objects.hash(getUserId(), getChatroomId());
     }
+
+    @Override
+    public String toString() {
+        return "ParticipantId{" +
+            "userId='" + userId + '\'' +
+            ", chatroomId=" + chatroomId +
+            '}';
+    }
 }

@@ -18,7 +18,7 @@ public class ChatRoomParticipant {
     @JoinColumn(name = "chatroom_id", insertable = false, updatable = false)
     private ChatRoom chatroom;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_profile_id", insertable = false, updatable = false)
     private UserProfile userProfile;
 
@@ -53,5 +53,12 @@ public class ChatRoomParticipant {
 
     public void setUserProfile(UserProfile userProfile) {
         this.userProfile = userProfile;
+    }
+
+    @Override
+    public String toString() {
+        return "ChatRoomParticipant{" +
+            "id=" + id +
+            '}';
     }
 }

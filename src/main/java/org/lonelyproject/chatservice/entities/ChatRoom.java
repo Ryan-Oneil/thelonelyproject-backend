@@ -31,7 +31,7 @@ public class ChatRoom {
     private List<ChatRoomParticipant> participants;
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
-    @OrderBy("timestamp desc")
+    @OrderBy("timestamp asc")
     private List<ChatMessage> messages;
 
     public ChatRoom() {
@@ -81,6 +81,10 @@ public class ChatRoom {
 
     public void setMessages(List<ChatMessage> messages) {
         this.messages = messages;
+    }
+
+    public void addMessage(ChatMessage message) {
+        this.getMessages().add(message);
     }
 
     public String getIcon() {

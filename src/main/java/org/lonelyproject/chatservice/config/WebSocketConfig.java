@@ -7,6 +7,8 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.lonelyproject.backend.security.FirebaseAuthorizationFilter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -22,6 +24,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
+//Order is set to execute before the websocket security config
+@Order(value = Ordered.HIGHEST_PRECEDENCE)
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
@@ -37,19 +41,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             .addEndpoint("/ws")
             .setAllowedOrigins("http://localhost:3000");
     }
-
-//    @Override
-//    public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
-//        DefaultContentTypeResolver resolver = new DefaultContentTypeResolver();
-//        resolver.setDefaultMimeType(MimeTypeUtils.APPLICATION_JSON);
-//
-//        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-//        converter.setObjectMapper(new ObjectMapper());
-//        converter.setContentTypeResolver(resolver);
-//
-//        messageConverters.add(converter);
-//        return false;
-//    }
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {

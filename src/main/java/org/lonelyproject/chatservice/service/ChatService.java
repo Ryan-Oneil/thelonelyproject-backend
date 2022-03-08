@@ -1,17 +1,24 @@
 package org.lonelyproject.chatservice.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import javax.transaction.Transactional;
 import org.lonelyproject.backend.dto.UserProfileDto;
+import org.lonelyproject.backend.entities.User;
 import org.lonelyproject.backend.exception.ResourceNotFound;
+import org.lonelyproject.backend.security.UserAuth;
 import org.lonelyproject.backend.util.ClassMapperUtil;
 import org.lonelyproject.chatservice.dto.ChatMessageDto;
 import org.lonelyproject.chatservice.dto.ChatRoomDto;
+import org.lonelyproject.chatservice.entities.ChatMessage;
 import org.lonelyproject.chatservice.entities.ChatRoom;
+import org.lonelyproject.chatservice.entities.ChatRoomParticipant;
 import org.lonelyproject.chatservice.enums.ChatRoomType;
 import org.lonelyproject.chatservice.repository.ChatMessageRepository;
 import org.lonelyproject.chatservice.repository.ChatRoomRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -63,5 +70,42 @@ public class ChatService {
             chatRoomDto.setName(receiver.getName());
         }
         return chatRoomDto;
+    }
+
+    public void sendMessageToUser(String userid, String message) {
+        messagingTemplate.convertAndSendToUser(userid, "/queue/messages", message);
+    }
+
+    @Transactional
+    public void registerMessageToChat(ChatMessageDto messageDto, UUID chatId, UserAuth sender) {
+        ChatRoom room = getChatRoomById(chatId);
+        List<ChatRoomParticipant> participants = room.getParticipants();
+
+        if (!isParticipantOfChat(participants, sender.getId())) {
+            throw new AccessDeniedException("You aren't in this chat room");
+        }
+        ChatMessage chatMessage = new ChatMessage(room, new User(sender.getId()), messageDto.getContent(), new Date());
+        room.addMessage(chatMessage);
+        chatRoomRepository.save(room);
+
+        notifyChatRoomParticipants(chatMessage, participants);
+    }
+
+    public void notifyChatRoomParticipants(ChatMessage chatMessage, List<ChatRoomParticipant> participants) {
+        ChatRoomDto chatRoomDto = ClassMapperUtil.mapClassIgnoreLazy(chatMessage.getChatRoom(), ChatRoomDto.class);
+        ChatMessageDto messageDto = ClassMapperUtil.mapClassIgnoreLazy(chatMessage, ChatMessageDto.class);
+        chatRoomDto.setMessages(List.of(messageDto));
+
+        participants
+            .forEach(chatRoomParticipant -> messagingTemplate.convertAndSendToUser(chatRoomParticipant.getId().getUserId(), "/queue/messages",
+                chatRoomDto));
+    }
+
+    public boolean isParticipantOfChat(List<ChatRoomParticipant> participants, String senderId) {
+        System.out.println("the sender id is " + senderId);
+        participants.forEach(System.out::println);
+
+        return participants.stream()
+            .anyMatch(chatRoomParticipant -> chatRoomParticipant.getId().getUserId().equals(senderId));
     }
 }
