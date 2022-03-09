@@ -32,7 +32,7 @@ public class ChatController {
     }
 
     @GetMapping("/messages/{chatID}")
-    public List<ChatMessageDto> findChatMessages(@PathVariable UUID chatID, @AuthenticationPrincipal UserAuth auth) {
+    public ChatRoomDto findChatMessages(@PathVariable UUID chatID, @AuthenticationPrincipal UserAuth auth) {
         return chatService.getChatMessages(chatID, auth.getId());
     }
 

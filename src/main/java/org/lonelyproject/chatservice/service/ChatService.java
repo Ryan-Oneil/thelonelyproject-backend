@@ -2,6 +2,7 @@ package org.lonelyproject.chatservice.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import javax.transaction.Transactional;
 import org.lonelyproject.backend.dto.UserProfileDto;
@@ -34,11 +35,14 @@ public class ChatService {
         this.messagingTemplate = messagingTemplate;
     }
 
-    public List<ChatMessageDto> getChatMessages(UUID roomId, String participantId) {
+    public ChatRoomDto getChatMessages(UUID roomId, String participantId) {
         ChatRoom chatRoom = chatRoomRepository.getChatroomByIdAndParticipantId(participantId, roomId)
             .orElseThrow(() -> new ResourceNotFound("Chat doesn't exist"));
 
-        return ClassMapperUtil.mapListIgnoreLazyCollection(chatRoom.getMessages(), ChatMessageDto.class);
+        ChatRoomDto chatRoomDto = transformChatroomForUser(chatRoom, participantId);
+        chatRoomDto.setMessages(ClassMapperUtil.mapListIgnoreLazyCollection(chatRoom.getMessages(), ChatMessageDto.class));
+
+        return chatRoomDto;
     }
 
     public ChatRoom getChatRoomById(UUID roomId) {
@@ -49,7 +53,13 @@ public class ChatService {
         List<ChatRoom> chatRooms = chatRoomRepository.getAllChatroomByUserId(userId);
 
         return chatRooms.stream()
-            .map(chatRoom -> transformChatroomForUser(chatRoom, userId))
+            .map(chatRoom -> {
+                ChatRoomDto chatRoomDto = transformChatroomForUser(chatRoom, userId);
+                ChatMessageDto lastMessage = getChatLastMessage(chatRoom.getId());
+                chatRoomDto.setMessages(List.of(lastMessage));
+
+                return chatRoomDto;
+            })
             .toList();
     }
 
@@ -97,15 +107,21 @@ public class ChatService {
         chatRoomDto.setMessages(List.of(messageDto));
 
         participants
+            .stream()
+            .filter(chatRoomParticipant -> !chatRoomParticipant.getId().getUserId().equals(chatMessage.getSender().getId()))
             .forEach(chatRoomParticipant -> messagingTemplate.convertAndSendToUser(chatRoomParticipant.getId().getUserId(), "/queue/messages",
                 chatRoomDto));
     }
 
     public boolean isParticipantOfChat(List<ChatRoomParticipant> participants, String senderId) {
-        System.out.println("the sender id is " + senderId);
-        participants.forEach(System.out::println);
-
         return participants.stream()
             .anyMatch(chatRoomParticipant -> chatRoomParticipant.getId().getUserId().equals(senderId));
+    }
+
+    public ChatMessageDto getChatLastMessage(UUID chatId) {
+        Optional<ChatMessage> message = chatMessageRepository.getFirstByChatRoom_IdOrderByTimestamp(chatId);
+        ChatMessage lastMessage = message.orElseGet(ChatMessage::new);
+
+        return ClassMapperUtil.mapClassIgnoreLazy(lastMessage, ChatMessageDto.class);
     }
 }
