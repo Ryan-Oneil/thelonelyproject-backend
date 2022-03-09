@@ -6,7 +6,7 @@ import java.util.List;
 
 public final class UserProfileDto implements Serializable {
 
-    private String userId;
+    private String id;
     private String name;
     private String about;
     private String profilePictureUrl;
@@ -18,19 +18,19 @@ public final class UserProfileDto implements Serializable {
     public UserProfileDto() {
     }
 
-    public UserProfileDto(String userId, String name, String about, String profilePictureUrl) {
-        this.userId = userId;
+    public UserProfileDto(String id, String name, String about, String profilePictureUrl) {
+        this.id = id;
         this.name = name;
         this.about = about;
         this.profilePictureUrl = profilePictureUrl;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getId() {
+        return id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -92,7 +92,7 @@ public final class UserProfileDto implements Serializable {
     @Override
     public String toString() {
         return "UserProfileDto{" +
-            "userId='" + userId + '\'' +
+            "userId='" + id + '\'' +
             ", name='" + name + '\'' +
             ", about='" + about + '\'' +
             ", profilePictureUrl='" + profilePictureUrl + '\'' +

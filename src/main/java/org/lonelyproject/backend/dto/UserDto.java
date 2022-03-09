@@ -1,6 +1,8 @@
 package org.lonelyproject.backend.dto;
 
-public final class UserDto {
+import java.io.Serializable;
+
+public final class UserDto implements Serializable {
 
     private String id;
     private String email;

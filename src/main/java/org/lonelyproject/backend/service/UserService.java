@@ -71,7 +71,7 @@ public class UserService {
     public UserProfileDto getPublicUserProfile(String userId) {
         UserProfile userProfile = getUserProfile(userId);
 
-        return userProfileToDTO(userProfile);
+        return mapClass(userProfile, UserProfileDto.class);
     }
 
     public List<UserProfileDto> getProfiles() {
@@ -228,10 +228,6 @@ public class UserService {
 
     public String getCdnUrl(CloudItemDetails cloudItemDetails) {
         return "%s/%s/%s".formatted(cdnUrl, cloudItemDetails.getContainerName(), cloudItemDetails.getName());
-    }
-
-    public UserProfileDto userProfileToDTO(UserProfile userProfile) {
-        return mapClass(userProfile, UserProfileDto.class);
     }
 
 }

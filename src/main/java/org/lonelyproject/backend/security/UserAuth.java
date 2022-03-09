@@ -64,4 +64,14 @@ public class UserAuth implements UserDetails {
     public String getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "UserAuth{" +
+            "id='" + id + '\'' +
+            ", username='" + username + '\'' +
+            ", enabled=" + enabled +
+            ", role='" + role + '\'' +
+            '}';
+    }
 }
