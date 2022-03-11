@@ -30,14 +30,14 @@ import org.lonelyproject.backend.entities.User;
 import org.lonelyproject.backend.entities.UserInterest;
 import org.lonelyproject.backend.entities.UserProfile;
 import org.lonelyproject.backend.entities.UserPrompt;
+import org.lonelyproject.backend.entities.supers.CloudItem;
 import org.lonelyproject.backend.entities.supers.ProfileTrait;
 import org.lonelyproject.backend.enums.ConnectionStatus;
 import org.lonelyproject.backend.enums.MediaType;
 import org.lonelyproject.backend.enums.UserRole;
 import org.lonelyproject.backend.exception.ProfileException;
 import org.lonelyproject.backend.exception.ResourceNotFound;
-import org.lonelyproject.backend.repository.ProfileMediaRepository;
-import org.lonelyproject.backend.repository.ProfilePictureRepository;
+import org.lonelyproject.backend.repository.CloudItemRepository;
 import org.lonelyproject.backend.repository.ProfileTraitRepository;
 import org.lonelyproject.backend.repository.UserProfileRepository;
 import org.lonelyproject.backend.security.UserAuth;
@@ -48,18 +48,16 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserProfileRepository userProfileRepository;
-    private final ProfilePictureRepository pictureRepository;
-    private final ProfileMediaRepository mediaRepository;
+    private final CloudItemRepository<CloudItem> cloudItemRepository;
     private final ProfileTraitRepository<ProfileTrait> profileTraitRepository;
     private final BackBlazeAPI backBlazeAPI;
     private final String cdnUrl;
 
-    public UserService(UserProfileRepository userProfileRepository, ProfilePictureRepository pictureRepository,
-        ProfileMediaRepository mediaRepository, ProfileTraitRepository<ProfileTrait> profileTraitRepository, BackBlazeAPI backBlazeAPI,
+    public UserService(UserProfileRepository userProfileRepository, CloudItemRepository<CloudItem> cloudItemRepository,
+        ProfileTraitRepository<ProfileTrait> profileTraitRepository, BackBlazeAPI backBlazeAPI,
         @Value("${cdn.url}") String cdnUrl) {
         this.userProfileRepository = userProfileRepository;
-        this.pictureRepository = pictureRepository;
-        this.mediaRepository = mediaRepository;
+        this.cloudItemRepository = cloudItemRepository;
         this.profileTraitRepository = profileTraitRepository;
         this.backBlazeAPI = backBlazeAPI;
         this.cdnUrl = cdnUrl;
@@ -138,7 +136,7 @@ public class UserService {
         CloudItemDetails details = picture.getItemDetails();
 
         backBlazeAPI.deleteFromBucket(details.getName(), details.getExternalId());
-        pictureRepository.delete(picture);
+        cloudItemRepository.delete(picture);
     }
 
     public List<ProfileMediaDto> addMediaToUserProfileGallery(String userId, List<UploadedFile> uploadedFiles) {
@@ -148,19 +146,19 @@ public class UserService {
 
                 return new ProfileMedia(details, getCdnUrl(details), MediaType.IMAGE, new UserProfile(userId));
             }).toList();
-        mediaRepository.saveAll(medias);
+        cloudItemRepository.saveAll(medias);
 
         return mapList(medias, ProfileMediaDto.class);
     }
 
     public void deleteProfileMedia(int mediaId, String userId) {
-        ProfileMedia media = mediaRepository.findByIdAndUserProfile_Id(mediaId, userId)
+        ProfileMedia media = cloudItemRepository.findProfileMediaByIdAndUserProfile_Id(mediaId, userId)
             .orElseThrow(() -> new ResourceNotFound("This media doesn't exist"));
 
         CloudItemDetails details = media.getItemDetails();
 
         backBlazeAPI.deleteFromBucket(details.getName(), details.getExternalId());
-        mediaRepository.delete(media);
+        cloudItemRepository.delete(media);
     }
 
     public List<InterestCategoryDto> getInterestsByCategory() {
@@ -170,7 +168,7 @@ public class UserService {
     }
 
     public void addInterestToUserProfile(String userId, InterestDto interestDto) {
-        Interest interest = getInterestById(interestDto.getId());
+        Interest interest = profileTraitRepository.getInterestById(interestDto.getId()).orElseThrow(() -> new ResourceNotFound("Invalid Interest"));
         UserProfile userProfile = getUserProfile(userId);
         userProfile.addInterest(new UserInterest(userProfile, interest));
 
@@ -182,7 +180,7 @@ public class UserService {
     }
 
     public void addPromptToUserProfile(String userId, PromptDto promptDto) {
-        Prompt prompt = getPromptById(promptDto.getPromptId());
+        Prompt prompt = profileTraitRepository.getPromptById(promptDto.getPromptId()).orElseThrow(() -> new ResourceNotFound("Invalid Prompt"));
         UserProfile userProfile = getUserProfile(userId);
         userProfile.addPrompt(new UserPrompt(userProfile, promptDto.getText(), prompt));
 
@@ -191,14 +189,6 @@ public class UserService {
 
     public void deleteUserProfilePrompt(String userId, int promptId) {
         profileTraitRepository.deleteUserPromptById(promptId, userId);
-    }
-
-    public Prompt getPromptById(int id) {
-        return profileTraitRepository.getPromptById(id).orElseThrow(() -> new ResourceNotFound("Invalid Prompt"));
-    }
-
-    public Interest getInterestById(int id) {
-        return profileTraitRepository.getInterestById(id).orElseThrow(() -> new ResourceNotFound("Invalid Interest"));
     }
 
     public List<PromptDto> getPrompts() {
