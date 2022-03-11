@@ -58,6 +58,11 @@ public class UserController {
         userService.changeConnectionStatus(auth.getId(), userId, ConnectionStatus.DENIED);
     }
 
+    @GetMapping("/profile/connections/pending")
+    public List<UserProfileDto> getPendingConnections(@AuthenticationPrincipal UserAuth auth) {
+        return userService.getPendingConnections(auth.getId());
+    }
+
     @GetMapping("/profiles")
     public List<UserProfileDto> getUserProfiles() {
         return userService.getProfiles();

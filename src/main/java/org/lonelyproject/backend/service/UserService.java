@@ -228,16 +228,17 @@ public class UserService {
         userProfileRepository.save(targetProfile);
     }
 
-//    public List<ProfileConnectionDto> getPendingConnections(String userId) {
-//        UserProfile userProfile = getUserProfile(userId);
-//        List<ProfileConnection> connections = userProfile.getConnections();
-//
-//        connections = connections.stream()
-//            .filter(connection -> !connection.getTarget().getId().equals(userId))
-//            .toList();
-//
-//        return mapListIgnoreLazyCollection(connections, ProfileConnectionDto.class);
-//    }
+    public List<UserProfileDto> getPendingConnections(String userId) {
+        UserProfile userProfile = getUserProfile(userId);
+        List<ProfileConnection> connections = userProfile.getConnections();
+
+        List<UserProfile> profiles = connections.stream()
+            .filter(connection -> connection.getTarget().getId().equals(userId) && connection.getStatus() == ConnectionStatus.PENDING)
+            .map(ProfileConnection::getConnector)
+            .toList();
+
+        return mapListIgnoreLazyCollection(profiles, UserProfileDto.class);
+    }
 
     public void changeConnectionStatus(String targetId, String connectorId, ConnectionStatus status) {
         UserProfile userProfile = userProfileRepository.getProfileConnection(targetId, connectorId)
