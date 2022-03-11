@@ -60,6 +60,10 @@ public class UserProfile {
         this.user = user;
     }
 
+    public UserProfile(ProfileConnection connection) {
+        this.connections = List.of(connection);
+    }
+
     public UserProfile() {
     }
 

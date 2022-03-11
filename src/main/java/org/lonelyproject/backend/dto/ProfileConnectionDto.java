@@ -5,48 +5,47 @@ import org.lonelyproject.backend.enums.ConnectionStatus;
 
 public class ProfileConnectionDto implements Serializable {
 
-    private ConnectionStatus status;
-    private UserProfileDto connector;
-    private UserProfileDto target;
+    private ConnectionStatus connectionStatus;
+    private boolean isAttemptingToConnect;
+    private boolean isConnector;
+
+    public ProfileConnectionDto(ConnectionStatus connectionStatus) {
+        this.connectionStatus = connectionStatus;
+    }
 
     public ProfileConnectionDto() {
     }
 
-    public ProfileConnectionDto(ConnectionStatus status, UserProfileDto connector, UserProfileDto target) {
-        this.status = status;
-        this.connector = connector;
-        this.target = target;
+    public ConnectionStatus getConnectionStatus() {
+        return connectionStatus;
     }
 
-    public ConnectionStatus getStatus() {
-        return status;
+    public void setConnectionStatus(ConnectionStatus connectionStatus) {
+        this.connectionStatus = connectionStatus;
     }
 
-    public void setStatus(ConnectionStatus status) {
-        this.status = status;
+    public boolean isAttemptingToConnect() {
+        return isAttemptingToConnect;
     }
 
-    public UserProfileDto getConnector() {
-        return connector;
+    public void setAttemptingToConnect(boolean attemptingToConnect) {
+        isAttemptingToConnect = attemptingToConnect;
     }
 
-    public void setConnector(UserProfileDto connector) {
-        this.connector = connector;
+    public boolean isConnector() {
+        return isConnector;
     }
 
-    public UserProfileDto getTarget() {
-        return target;
-    }
-
-    public void setTarget(UserProfileDto target) {
-        this.target = target;
+    public void setConnector(boolean connector) {
+        isConnector = connector;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" +
-            "status = " + status + ", " +
-            "connector = " + connector + ", " +
-            "target = " + target + ")";
+        return "ProfileConnectionDto{" +
+            "connectionStatus=" + connectionStatus +
+            ", isAttemptingToConnect=" + isAttemptingToConnect +
+            ", isConnector=" + isConnector +
+            '}';
     }
 }

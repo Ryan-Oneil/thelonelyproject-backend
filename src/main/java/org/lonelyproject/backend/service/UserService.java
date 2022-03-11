@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.lonelyproject.backend.api.BackBlazeAPI;
 import org.lonelyproject.backend.dto.InterestCategoryDto;
 import org.lonelyproject.backend.dto.InterestDto;
@@ -68,10 +69,22 @@ public class UserService {
         return userProfileRepository.getUserProfileByUserId(userId).orElseThrow(() -> new RuntimeException("User doesn't exist"));
     }
 
-    public UserProfileDto getPublicUserProfile(String userId) {
+    public UserProfileDto getPublicUserProfile(String userId, String requester) {
         UserProfile userProfile = getUserProfile(userId);
+        Optional<UserProfile> connector = userProfileRepository.getProfileConnection(userId, requester);
 
-        return mapClass(userProfile, UserProfileDto.class);
+        UserProfileDto profileDto = mapClass(userProfile, UserProfileDto.class);
+        connector.ifPresent(profile -> {
+            ProfileConnection profileConnection = profile.getConnections().get(0);
+            ProfileConnectionDto profileConnectionDto = new ProfileConnectionDto(profileConnection.getStatus());
+
+            if (profileConnection.getStatus() != ConnectionStatus.CONNECTED) {
+                profileConnectionDto.setAttemptingToConnect(true);
+                profileConnectionDto.setConnector(profileConnection.getConnector().getId().equals(requester));
+            }
+            profileDto.setConnection(profileConnectionDto);
+        });
+        return profileDto;
     }
 
     public List<UserProfileDto> getProfiles() {
@@ -215,15 +228,29 @@ public class UserService {
         userProfileRepository.save(targetProfile);
     }
 
-    public List<ProfileConnectionDto> getPendingConnections(String userId) {
-        UserProfile userProfile = getUserProfile(userId);
-        List<ProfileConnection> connections = userProfile.getConnections();
+//    public List<ProfileConnectionDto> getPendingConnections(String userId) {
+//        UserProfile userProfile = getUserProfile(userId);
+//        List<ProfileConnection> connections = userProfile.getConnections();
+//
+//        connections = connections.stream()
+//            .filter(connection -> !connection.getTarget().getId().equals(userId))
+//            .toList();
+//
+//        return mapListIgnoreLazyCollection(connections, ProfileConnectionDto.class);
+//    }
 
-        connections = connections.stream()
-            .filter(connection -> !connection.getTarget().getId().equals(userId))
-            .toList();
+    public void changeConnectionStatus(String targetId, String connectorId, ConnectionStatus status) {
+        UserProfile userProfile = userProfileRepository.getProfileConnection(targetId, connectorId)
+            .orElseThrow(() -> new ProfileException("You don't have a pending connection with this person"));
 
-        return mapListIgnoreLazyCollection(connections, ProfileConnectionDto.class);
+        ProfileConnection profileConnection = userProfile.getConnections().get(0);
+
+        if (!profileConnection.getConnector().getId().equals(connectorId)) {
+            throw new ProfileException("You can't accept your own request");
+        }
+        profileConnection.setStatus(status);
+
+        userProfileRepository.save(profileConnection.getConnector());
     }
 
     public String getCdnUrl(CloudItemDetails cloudItemDetails) {

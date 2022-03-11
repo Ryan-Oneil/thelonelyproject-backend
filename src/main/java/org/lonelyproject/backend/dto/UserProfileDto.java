@@ -14,6 +14,7 @@ public final class UserProfileDto implements Serializable {
     private List<InterestDto> interests = new ArrayList<>();
     private List<PromptDto> prompts = new ArrayList<>();
     private List<String> spotifyArtists = new ArrayList<>();
+    private ProfileConnectionDto connection;
 
     public UserProfileDto() {
     }
@@ -89,10 +90,18 @@ public final class UserProfileDto implements Serializable {
         this.spotifyArtists = spotifyArtists;
     }
 
+    public ProfileConnectionDto getConnection() {
+        return connection;
+    }
+
+    public void setConnection(ProfileConnectionDto connection) {
+        this.connection = connection;
+    }
+
     @Override
     public String toString() {
         return "UserProfileDto{" +
-            "userId='" + id + '\'' +
+            "id='" + id + '\'' +
             ", name='" + name + '\'' +
             ", about='" + about + '\'' +
             ", profilePictureUrl='" + profilePictureUrl + '\'' +
@@ -100,6 +109,7 @@ public final class UserProfileDto implements Serializable {
             ", interests=" + interests +
             ", prompts=" + prompts +
             ", spotifyArtists=" + spotifyArtists +
+            ", connection=" + connection +
             '}';
     }
 }
