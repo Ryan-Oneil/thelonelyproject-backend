@@ -7,7 +7,10 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 import org.lonelyproject.backend.dto.UserProfileDto;
 import org.lonelyproject.backend.entities.User;
+import org.lonelyproject.backend.entities.UserProfile;
+import org.lonelyproject.backend.exception.ProfileException;
 import org.lonelyproject.backend.exception.ResourceNotFound;
+import org.lonelyproject.backend.repository.UserProfileRepository;
 import org.lonelyproject.backend.security.UserAuth;
 import org.lonelyproject.backend.util.ClassMapperUtil;
 import org.lonelyproject.chatservice.dto.ChatMessageDto;
@@ -28,11 +31,14 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final UserProfileRepository profileRepository;
 
-    public ChatService(ChatMessageRepository chatMessageRepository, ChatRoomRepository chatRoomRepository, SimpMessagingTemplate messagingTemplate) {
+    public ChatService(ChatMessageRepository chatMessageRepository, ChatRoomRepository chatRoomRepository, SimpMessagingTemplate messagingTemplate,
+        UserProfileRepository profileRepository) {
         this.chatMessageRepository = chatMessageRepository;
         this.chatRoomRepository = chatRoomRepository;
         this.messagingTemplate = messagingTemplate;
+        this.profileRepository = profileRepository;
     }
 
     public ChatRoomDto getChatMessages(UUID roomId, String participantId) {
@@ -123,5 +129,21 @@ public class ChatService {
         ChatMessage lastMessage = message.orElseGet(ChatMessage::new);
 
         return ClassMapperUtil.mapClassIgnoreLazy(lastMessage, ChatMessageDto.class);
+    }
+
+    public ChatRoomDto getOrCreateChat(String requesterId, String targetId) {
+        if (!profileRepository.isConnected(requesterId, targetId)) {
+            throw new ProfileException("You must be connected with this user to start a chat");
+        }
+        ChatRoom chatRoom = chatRoomRepository.getChatRoomByParticipants(requesterId, targetId).orElseGet(() -> {
+            ChatRoom newRoom = new ChatRoom(UUID.randomUUID(), ChatRoomType.DIRECT);
+            ChatRoomParticipant requester = new ChatRoomParticipant(newRoom, new UserProfile(requesterId));
+            ChatRoomParticipant target = new ChatRoomParticipant(newRoom, new UserProfile(targetId));
+            newRoom.setParticipants(List.of(requester, target));
+            chatRoomRepository.save(newRoom);
+
+            return newRoom;
+        });
+        return ClassMapperUtil.mapClassIgnoreLazy(chatRoom, ChatRoomDto.class);
     }
 }

@@ -14,4 +14,8 @@ public interface ChatRoomRepository extends CrudRepository<ChatRoom, UUID> {
 
     @Query("select p.chatroom from ChatRoomParticipant p where p.id.userId = ?1 and p.id.chatroomId = ?2")
     Optional<ChatRoom> getChatroomByIdAndParticipantId(String userId, UUID chatroomId);
+
+    @Query("select p.chatroom from ChatRoomParticipant p where p.id.userId = ?1 and p.chatroom.id in "
+        + "(select p.id.chatroomId from ChatRoomParticipant p where p.id.userId = ?2)")
+    Optional<ChatRoom> getChatRoomByParticipants(String userId1, String userId2);
 }

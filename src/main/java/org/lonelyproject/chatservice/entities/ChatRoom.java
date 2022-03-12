@@ -37,14 +37,9 @@ public class ChatRoom {
     public ChatRoom() {
     }
 
-    public ChatRoom(UUID id, String name, String icon, List<ChatRoomParticipant> participants, ChatRoomType type,
-        List<ChatMessage> messages) {
+    public ChatRoom(UUID id, ChatRoomType type) {
         this.id = id;
-        this.name = name;
-        this.icon = icon;
-        this.participants = participants;
         this.type = type;
-        this.messages = messages;
     }
 
     public UUID getId() {
