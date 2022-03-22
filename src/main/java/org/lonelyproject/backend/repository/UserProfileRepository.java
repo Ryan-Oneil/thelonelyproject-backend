@@ -24,4 +24,7 @@ public interface UserProfileRepository extends CrudRepository<UserProfile, Strin
             + "OR (pc.id.connectorId = ?2 and pc.id.targetId = ?1)")
     boolean isConnected(String connectorId, String userId);
 
+    @Query("select p from UserProfile p where p.id not in (?1)")
+    List<UserProfile> findAllNotInList(List<String> userIds);
+
 }

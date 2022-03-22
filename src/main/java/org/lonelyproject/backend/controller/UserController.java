@@ -13,6 +13,7 @@ import org.lonelyproject.backend.dto.UserProfileDto;
 import org.lonelyproject.backend.enums.ConnectionStatus;
 import org.lonelyproject.backend.security.UserAuth;
 import org.lonelyproject.backend.service.FileService;
+import org.lonelyproject.backend.service.MatchingService;
 import org.lonelyproject.backend.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,10 +33,12 @@ public class UserController {
 
     private final UserService userService;
     private final FileService fileService;
+    private final MatchingService matchingService;
 
-    public UserController(UserService userService, FileService fileService) {
+    public UserController(UserService userService, FileService fileService, MatchingService matchingService) {
         this.userService = userService;
         this.fileService = fileService;
+        this.matchingService = matchingService;
     }
 
     @GetMapping("/profile/{userId}")
@@ -130,5 +133,10 @@ public class UserController {
     @GetMapping("/profile/prompts")
     public List<PromptDto> getPrompts() {
         return userService.getPrompts();
+    }
+
+    @GetMapping("/profile/matches")
+    public List<UserProfileDto> getMatches(@AuthenticationPrincipal UserAuth auth) {
+        return matchingService.getMatches(auth.getId());
     }
 }

@@ -145,4 +145,19 @@ public class UserProfile {
     public void setConnections(List<ProfileConnection> connections) {
         this.connections = connections;
     }
+
+    @Override
+    public String toString() {
+        return "UserProfile{" +
+            "id='" + id + '\'' +
+            ", name='" + name + '\'' +
+            ", about='" + about + '\'' +
+            ", picture=" + picture +
+            ", user=" + user +
+            ", medias=" + medias +
+            ", interests=" + interests +
+            ", prompts=" + prompts +
+            ", connections=" + connections +
+            '}';
+    }
 }
