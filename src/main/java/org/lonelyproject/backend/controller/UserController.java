@@ -10,8 +10,10 @@ import org.lonelyproject.backend.dto.ProfileMediaDto;
 import org.lonelyproject.backend.dto.PromptDto;
 import org.lonelyproject.backend.dto.UploadedFile;
 import org.lonelyproject.backend.dto.UserProfileDto;
+import org.lonelyproject.backend.enums.ConnectionStatus;
 import org.lonelyproject.backend.security.UserAuth;
 import org.lonelyproject.backend.service.FileService;
+import org.lonelyproject.backend.service.MatchingService;
 import org.lonelyproject.backend.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,20 +33,37 @@ public class UserController {
 
     private final UserService userService;
     private final FileService fileService;
+    private final MatchingService matchingService;
 
-    public UserController(UserService userService, FileService fileService) {
+    public UserController(UserService userService, FileService fileService, MatchingService matchingService) {
         this.userService = userService;
         this.fileService = fileService;
+        this.matchingService = matchingService;
     }
 
     @GetMapping("/profile/{userId}")
-    public UserProfileDto getUserProfileByUserId(@PathVariable String userId) {
-        return userService.getPublicUserProfile(userId);
+    public UserProfileDto getUserProfileByUserId(@PathVariable String userId, @AuthenticationPrincipal UserAuth auth) {
+        return userService.getPublicUserProfile(userId, auth.getId());
     }
 
     @PostMapping("/profile/{userId}/connect")
     public void connectToUser(@PathVariable String userId, @AuthenticationPrincipal UserAuth auth) {
         userService.sendConnectionRequest(auth.getId(), userId);
+    }
+
+    @PostMapping("/profile/{userId}/connect/accept")
+    public void acceptUserConnectionRequest(@PathVariable String userId, @AuthenticationPrincipal UserAuth auth) {
+        userService.changeConnectionStatus(auth.getId(), userId, ConnectionStatus.CONNECTED);
+    }
+
+    @PostMapping("/profile/{userId}/connect/deny")
+    public void denyUserConnectionRequest(@PathVariable String userId, @AuthenticationPrincipal UserAuth auth) {
+        userService.changeConnectionStatus(auth.getId(), userId, ConnectionStatus.DENIED);
+    }
+
+    @GetMapping("/profile/connections/pending")
+    public List<UserProfileDto> getPendingConnections(@AuthenticationPrincipal UserAuth auth) {
+        return userService.getPendingConnections(auth.getId());
     }
 
     @GetMapping("/profiles")
@@ -114,5 +133,10 @@ public class UserController {
     @GetMapping("/profile/prompts")
     public List<PromptDto> getPrompts() {
         return userService.getPrompts();
+    }
+
+    @GetMapping("/profile/matches")
+    public List<UserProfileDto> getMatches(@AuthenticationPrincipal UserAuth auth) {
+        return matchingService.getMatches(auth.getId());
     }
 }

@@ -60,6 +60,10 @@ public class UserProfile {
         this.user = user;
     }
 
+    public UserProfile(ProfileConnection connection) {
+        this.connections = List.of(connection);
+    }
+
     public UserProfile() {
     }
 
@@ -140,5 +144,20 @@ public class UserProfile {
 
     public void setConnections(List<ProfileConnection> connections) {
         this.connections = connections;
+    }
+
+    @Override
+    public String toString() {
+        return "UserProfile{" +
+            "id='" + id + '\'' +
+            ", name='" + name + '\'' +
+            ", about='" + about + '\'' +
+            ", picture=" + picture +
+            ", user=" + user +
+            ", medias=" + medias +
+            ", interests=" + interests +
+            ", prompts=" + prompts +
+            ", connections=" + connections +
+            '}';
     }
 }

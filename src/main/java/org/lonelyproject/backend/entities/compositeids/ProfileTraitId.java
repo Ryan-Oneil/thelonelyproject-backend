@@ -22,6 +22,14 @@ public class ProfileTraitId implements Serializable {
         this.traitId = traitId;
     }
 
+    public String getUserProfileId() {
+        return userProfileId;
+    }
+
+    public Integer getTraitId() {
+        return traitId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

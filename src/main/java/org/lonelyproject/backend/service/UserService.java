@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.lonelyproject.backend.api.BackBlazeAPI;
 import org.lonelyproject.backend.dto.InterestCategoryDto;
 import org.lonelyproject.backend.dto.InterestDto;
@@ -29,14 +30,14 @@ import org.lonelyproject.backend.entities.User;
 import org.lonelyproject.backend.entities.UserInterest;
 import org.lonelyproject.backend.entities.UserProfile;
 import org.lonelyproject.backend.entities.UserPrompt;
+import org.lonelyproject.backend.entities.supers.CloudItem;
 import org.lonelyproject.backend.entities.supers.ProfileTrait;
 import org.lonelyproject.backend.enums.ConnectionStatus;
 import org.lonelyproject.backend.enums.MediaType;
 import org.lonelyproject.backend.enums.UserRole;
 import org.lonelyproject.backend.exception.ProfileException;
 import org.lonelyproject.backend.exception.ResourceNotFound;
-import org.lonelyproject.backend.repository.ProfileMediaRepository;
-import org.lonelyproject.backend.repository.ProfilePictureRepository;
+import org.lonelyproject.backend.repository.CloudItemRepository;
 import org.lonelyproject.backend.repository.ProfileTraitRepository;
 import org.lonelyproject.backend.repository.UserProfileRepository;
 import org.lonelyproject.backend.security.UserAuth;
@@ -47,18 +48,16 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserProfileRepository userProfileRepository;
-    private final ProfilePictureRepository pictureRepository;
-    private final ProfileMediaRepository mediaRepository;
+    private final CloudItemRepository<CloudItem> cloudItemRepository;
     private final ProfileTraitRepository<ProfileTrait> profileTraitRepository;
     private final BackBlazeAPI backBlazeAPI;
     private final String cdnUrl;
 
-    public UserService(UserProfileRepository userProfileRepository, ProfilePictureRepository pictureRepository,
-        ProfileMediaRepository mediaRepository, ProfileTraitRepository<ProfileTrait> profileTraitRepository, BackBlazeAPI backBlazeAPI,
+    public UserService(UserProfileRepository userProfileRepository, CloudItemRepository<CloudItem> cloudItemRepository,
+        ProfileTraitRepository<ProfileTrait> profileTraitRepository, BackBlazeAPI backBlazeAPI,
         @Value("${cdn.url}") String cdnUrl) {
         this.userProfileRepository = userProfileRepository;
-        this.pictureRepository = pictureRepository;
-        this.mediaRepository = mediaRepository;
+        this.cloudItemRepository = cloudItemRepository;
         this.profileTraitRepository = profileTraitRepository;
         this.backBlazeAPI = backBlazeAPI;
         this.cdnUrl = cdnUrl;
@@ -68,10 +67,22 @@ public class UserService {
         return userProfileRepository.getUserProfileByUserId(userId).orElseThrow(() -> new RuntimeException("User doesn't exist"));
     }
 
-    public UserProfileDto getPublicUserProfile(String userId) {
+    public UserProfileDto getPublicUserProfile(String userId, String requester) {
         UserProfile userProfile = getUserProfile(userId);
+        Optional<UserProfile> connector = userProfileRepository.getProfileConnection(userId, requester);
 
-        return mapClass(userProfile, UserProfileDto.class);
+        UserProfileDto profileDto = mapClass(userProfile, UserProfileDto.class);
+        connector.ifPresent(profile -> {
+            ProfileConnection profileConnection = profile.getConnections().get(0);
+            ProfileConnectionDto profileConnectionDto = new ProfileConnectionDto(profileConnection.getStatus());
+
+            if (profileConnection.getStatus() != ConnectionStatus.CONNECTED) {
+                profileConnectionDto.setAttemptingToConnect(true);
+                profileConnectionDto.setConnector(profileConnection.getConnector().getId().equals(requester));
+            }
+            profileDto.setConnection(profileConnectionDto);
+        });
+        return profileDto;
     }
 
     public List<UserProfileDto> getProfiles() {
@@ -125,7 +136,7 @@ public class UserService {
         CloudItemDetails details = picture.getItemDetails();
 
         backBlazeAPI.deleteFromBucket(details.getName(), details.getExternalId());
-        pictureRepository.delete(picture);
+        cloudItemRepository.delete(picture);
     }
 
     public List<ProfileMediaDto> addMediaToUserProfileGallery(String userId, List<UploadedFile> uploadedFiles) {
@@ -135,19 +146,19 @@ public class UserService {
 
                 return new ProfileMedia(details, getCdnUrl(details), MediaType.IMAGE, new UserProfile(userId));
             }).toList();
-        mediaRepository.saveAll(medias);
+        cloudItemRepository.saveAll(medias);
 
         return mapList(medias, ProfileMediaDto.class);
     }
 
     public void deleteProfileMedia(int mediaId, String userId) {
-        ProfileMedia media = mediaRepository.findByIdAndUserProfile_Id(mediaId, userId)
+        ProfileMedia media = cloudItemRepository.findProfileMediaByIdAndUserProfile_Id(mediaId, userId)
             .orElseThrow(() -> new ResourceNotFound("This media doesn't exist"));
 
         CloudItemDetails details = media.getItemDetails();
 
         backBlazeAPI.deleteFromBucket(details.getName(), details.getExternalId());
-        mediaRepository.delete(media);
+        cloudItemRepository.delete(media);
     }
 
     public List<InterestCategoryDto> getInterestsByCategory() {
@@ -157,7 +168,7 @@ public class UserService {
     }
 
     public void addInterestToUserProfile(String userId, InterestDto interestDto) {
-        Interest interest = getInterestById(interestDto.getId());
+        Interest interest = profileTraitRepository.getInterestById(interestDto.getId()).orElseThrow(() -> new ResourceNotFound("Invalid Interest"));
         UserProfile userProfile = getUserProfile(userId);
         userProfile.addInterest(new UserInterest(userProfile, interest));
 
@@ -169,7 +180,7 @@ public class UserService {
     }
 
     public void addPromptToUserProfile(String userId, PromptDto promptDto) {
-        Prompt prompt = getPromptById(promptDto.getPromptId());
+        Prompt prompt = profileTraitRepository.getPromptById(promptDto.getPromptId()).orElseThrow(() -> new ResourceNotFound("Invalid Prompt"));
         UserProfile userProfile = getUserProfile(userId);
         userProfile.addPrompt(new UserPrompt(userProfile, promptDto.getText(), prompt));
 
@@ -178,14 +189,6 @@ public class UserService {
 
     public void deleteUserProfilePrompt(String userId, int promptId) {
         profileTraitRepository.deleteUserPromptById(promptId, userId);
-    }
-
-    public Prompt getPromptById(int id) {
-        return profileTraitRepository.getPromptById(id).orElseThrow(() -> new ResourceNotFound("Invalid Prompt"));
-    }
-
-    public Interest getInterestById(int id) {
-        return profileTraitRepository.getInterestById(id).orElseThrow(() -> new ResourceNotFound("Invalid Interest"));
     }
 
     public List<PromptDto> getPrompts() {
@@ -215,15 +218,30 @@ public class UserService {
         userProfileRepository.save(targetProfile);
     }
 
-    public List<ProfileConnectionDto> getPendingConnections(String userId) {
+    public List<UserProfileDto> getPendingConnections(String userId) {
         UserProfile userProfile = getUserProfile(userId);
         List<ProfileConnection> connections = userProfile.getConnections();
 
-        connections = connections.stream()
-            .filter(connection -> !connection.getTarget().getId().equals(userId))
+        List<UserProfile> profiles = connections.stream()
+            .filter(connection -> connection.getTarget().getId().equals(userId) && connection.getStatus() == ConnectionStatus.PENDING)
+            .map(ProfileConnection::getConnector)
             .toList();
 
-        return mapListIgnoreLazyCollection(connections, ProfileConnectionDto.class);
+        return mapListIgnoreLazyCollection(profiles, UserProfileDto.class);
+    }
+
+    public void changeConnectionStatus(String targetId, String connectorId, ConnectionStatus status) {
+        UserProfile userProfile = userProfileRepository.getProfileConnection(targetId, connectorId)
+            .orElseThrow(() -> new ProfileException("You don't have a pending connection with this person"));
+
+        ProfileConnection profileConnection = userProfile.getConnections().get(0);
+
+        if (!profileConnection.getConnector().getId().equals(connectorId)) {
+            throw new ProfileException("You can't accept your own request");
+        }
+        profileConnection.setStatus(status);
+
+        userProfileRepository.save(profileConnection.getConnector());
     }
 
     public String getCdnUrl(CloudItemDetails cloudItemDetails) {
