@@ -36,7 +36,7 @@ public class MatchingService {
         UserProfile userProfile = getUserProfile(userId);
 
         List<ProfileMatch> existingMatches = matchRepository.getALlMatchesByUser(userId);
-        List<UserProfile> profiles = getNewMatchPotentialForUser(existingMatches, userId);
+        List<UserProfile> profiles = getNewMatchPotentialForUser(existingMatches, userProfile);
 
         List<ProfileMatch> newMatches = profiles.stream()
             .map(profile -> calculateMatchScore(userProfile, profile))
@@ -53,13 +53,18 @@ public class MatchingService {
         return ClassMapperUtil.mapListIgnoreLazyCollection(matches, UserProfileDto.class);
     }
 
-    public List<UserProfile> getNewMatchPotentialForUser(List<ProfileMatch> existingMatchProfile, String userId) {
+    public List<UserProfile> getNewMatchPotentialForUser(List<ProfileMatch> existingMatchProfile, UserProfile userProfile) {
+        List<String> existingConnections = userProfileRepository.getAllMatchesByConnector(userProfile.getId()).stream()
+            .map(UserProfile::getId)
+            .toList();
+
         List<String> profileIds = existingMatchProfile.stream()
             .flatMap(profileMatch -> Stream.of(profileMatch.getMatchId().getMatchProfileId(), profileMatch.getMatchId().getProfileId()))
             .distinct()
             .collect(Collectors.toList());
 
-        profileIds.add(userId);
+        profileIds.add(userProfile.getId());
+        profileIds.addAll(existingConnections);
 
         return userProfileRepository.findAllNotInList(profileIds);
     }

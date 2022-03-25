@@ -27,4 +27,6 @@ public interface UserProfileRepository extends CrudRepository<UserProfile, Strin
     @Query("select p from UserProfile p where p.id not in (?1)")
     List<UserProfile> findAllNotInList(List<String> userIds);
 
+    @Query("select p.target from ProfileConnection p where p.id.connectorId = ?1")
+    List<UserProfile> getAllMatchesByConnector(String connectorId);
 }
