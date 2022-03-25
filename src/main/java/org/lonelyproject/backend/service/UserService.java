@@ -38,6 +38,7 @@ import org.lonelyproject.backend.enums.UserRole;
 import org.lonelyproject.backend.exception.ProfileException;
 import org.lonelyproject.backend.exception.ResourceNotFound;
 import org.lonelyproject.backend.repository.CloudItemRepository;
+import org.lonelyproject.backend.repository.ProfileMatchRepository;
 import org.lonelyproject.backend.repository.ProfileTraitRepository;
 import org.lonelyproject.backend.repository.UserProfileRepository;
 import org.lonelyproject.backend.security.UserAuth;
@@ -50,15 +51,17 @@ public class UserService {
     private final UserProfileRepository userProfileRepository;
     private final CloudItemRepository<CloudItem> cloudItemRepository;
     private final ProfileTraitRepository<ProfileTrait> profileTraitRepository;
+    private final ProfileMatchRepository profileMatchRepository;
     private final BackBlazeAPI backBlazeAPI;
     private final String cdnUrl;
 
     public UserService(UserProfileRepository userProfileRepository, CloudItemRepository<CloudItem> cloudItemRepository,
-        ProfileTraitRepository<ProfileTrait> profileTraitRepository, BackBlazeAPI backBlazeAPI,
+        ProfileTraitRepository<ProfileTrait> profileTraitRepository, ProfileMatchRepository profileMatchRepository, BackBlazeAPI backBlazeAPI,
         @Value("${cdn.url}") String cdnUrl) {
         this.userProfileRepository = userProfileRepository;
         this.cloudItemRepository = cloudItemRepository;
         this.profileTraitRepository = profileTraitRepository;
+        this.profileMatchRepository = profileMatchRepository;
         this.backBlazeAPI = backBlazeAPI;
         this.cdnUrl = cdnUrl;
     }
@@ -168,6 +171,9 @@ public class UserService {
     }
 
     public void addInterestToUserProfile(String userId, InterestDto interestDto) {
+        if (profileTraitRepository.getTotalProfileInterests(userId) > 8) {
+            throw new ProfileException("You can only have 8 interests");
+        }
         Interest interest = profileTraitRepository.getInterestById(interestDto.getId()).orElseThrow(() -> new ResourceNotFound("Invalid Interest"));
         UserProfile userProfile = getUserProfile(userId);
         userProfile.addInterest(new UserInterest(userProfile, interest));
@@ -216,6 +222,7 @@ public class UserService {
         targetProfile.addConnection(profileConnection);
 
         userProfileRepository.save(targetProfile);
+        profileMatchRepository.deleteByMatchAndTarget(connectorId, targetId);
     }
 
     public List<UserProfileDto> getPendingConnections(String userId) {
