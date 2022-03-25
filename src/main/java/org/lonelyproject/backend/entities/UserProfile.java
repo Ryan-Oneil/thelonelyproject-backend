@@ -1,6 +1,9 @@
 package org.lonelyproject.backend.entities;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,9 +49,13 @@ public class UserProfile {
     @Fetch(value = FetchMode.SUBSELECT)
     private List<UserPrompt> prompts;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "connector")
     @Fetch(value = FetchMode.SUBSELECT)
-    private List<ProfileConnection> connections;
+    private List<ProfileConnection> sentConnections = new ArrayList<>();
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "target")
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<ProfileConnection> receivedConnections = new ArrayList<>();
 
     public UserProfile(String id) {
         this.id = id;
@@ -61,7 +68,7 @@ public class UserProfile {
     }
 
     public UserProfile(ProfileConnection connection) {
-        this.connections = List.of(connection);
+        this.receivedConnections = List.of(connection);
     }
 
     public UserProfile() {
@@ -135,29 +142,24 @@ public class UserProfile {
     }
 
     public List<ProfileConnection> getConnections() {
-        return connections;
+        return Stream.of(sentConnections, receivedConnections)
+            .flatMap(Collection::stream)
+            .toList();
     }
 
-    public void addConnection(ProfileConnection connection) {
-        this.getConnections().add(connection);
+    public List<ProfileConnection> getSentConnections() {
+        return sentConnections;
     }
 
-    public void setConnections(List<ProfileConnection> connections) {
-        this.connections = connections;
+    public void addSentConnections(ProfileConnection connection) {
+        this.sentConnections.add(connection);
     }
 
-    @Override
-    public String toString() {
-        return "UserProfile{" +
-            "id='" + id + '\'' +
-            ", name='" + name + '\'' +
-            ", about='" + about + '\'' +
-            ", picture=" + picture +
-            ", user=" + user +
-            ", medias=" + medias +
-            ", interests=" + interests +
-            ", prompts=" + prompts +
-            ", connections=" + connections +
-            '}';
+    public List<ProfileConnection> getReceivedConnections() {
+        return receivedConnections;
+    }
+
+    public void setReceivedConnections(List<ProfileConnection> receivedConnections) {
+        this.receivedConnections = receivedConnections;
     }
 }

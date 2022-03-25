@@ -63,7 +63,12 @@ public class UserController {
 
     @GetMapping("/profile/connections/pending")
     public List<UserProfileDto> getPendingConnections(@AuthenticationPrincipal UserAuth auth) {
-        return userService.getPendingConnections(auth.getId());
+        return userService.getConnectionsByStatus(auth.getId(), ConnectionStatus.PENDING);
+    }
+
+    @GetMapping("/profile/connections/connected")
+    public List<UserProfileDto> getAcceptedConnections(@AuthenticationPrincipal UserAuth auth) {
+        return userService.getConnectionsByStatus(auth.getId(), ConnectionStatus.CONNECTED);
     }
 
     @GetMapping("/profiles")
