@@ -34,4 +34,8 @@ public interface ProfileTraitRepository<T extends ProfileTrait> extends CrudRepo
     @Modifying
     @Query("delete from UserPrompt up where up.profileTraitId.traitId = ?1 and up.profileTraitId.userProfileId = ?2")
     void deleteUserPromptById(int promptId, String userId);
+
+
+    @Query("select count(ui) from UserInterest ui where ui.profileTraitId.userProfileId = ?1")
+    Integer getTotalProfileInterests(String profileId);
 }
