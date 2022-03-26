@@ -1,6 +1,7 @@
 package org.lonelyproject.chatservice.entities;
 
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import org.lonelyproject.backend.entities.User;
 
 @Entity
@@ -31,6 +33,9 @@ public class ChatMessage {
     @Column(nullable = false)
     private Date timestamp;
 
+    @OneToOne(mappedBy = "chatMessage", cascade = CascadeType.ALL)
+    private ChatSharedMedia sharedMedia;
+
     public ChatMessage() {
     }
 
@@ -39,6 +44,15 @@ public class ChatMessage {
         this.sender = sender;
         this.content = content;
         this.timestamp = timestamp;
+    }
+
+    public ChatMessage(ChatRoom chatRoom, User sender, String content, Date timestamp, ChatSharedMedia sharedMedia) {
+        this.chatRoom = chatRoom;
+        this.sender = sender;
+        this.content = content;
+        this.timestamp = timestamp;
+        this.sharedMedia = sharedMedia;
+        this.sharedMedia.setChatMessage(this);
     }
 
     public int getId() {
@@ -79,5 +93,13 @@ public class ChatMessage {
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public ChatSharedMedia getSharedMedia() {
+        return sharedMedia;
+    }
+
+    public void setSharedMedia(ChatSharedMedia sharedMedia) {
+        this.sharedMedia = sharedMedia;
     }
 }
