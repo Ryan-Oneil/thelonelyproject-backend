@@ -171,7 +171,7 @@ public class UserService {
     }
 
     public void addInterestToUserProfile(String userId, InterestDto interestDto) {
-        if (profileTraitRepository.getTotalProfileInterests(userId) > 8) {
+        if (profileTraitRepository.getTotalProfileInterests(userId) >= 8) {
             throw new ProfileException("You can only have 8 interests");
         }
         Interest interest = profileTraitRepository.getInterestById(interestDto.getId()).orElseThrow(() -> new ResourceNotFound("Invalid Interest"));
@@ -219,18 +219,18 @@ public class UserService {
         UserProfile targetProfile = getUserProfile(targetId);
 
         ProfileConnection profileConnection = new ProfileConnection(ConnectionStatus.PENDING, new UserProfile(connectorId), targetProfile);
-        targetProfile.addConnection(profileConnection);
+        targetProfile.addSentConnections(profileConnection);
 
         userProfileRepository.save(targetProfile);
         profileMatchRepository.deleteByMatchAndTarget(connectorId, targetId);
     }
 
-    public List<UserProfileDto> getPendingConnections(String userId) {
+    public List<UserProfileDto> getConnectionsByStatus(String userId, ConnectionStatus status) {
         UserProfile userProfile = getUserProfile(userId);
         List<ProfileConnection> connections = userProfile.getConnections();
-
+        
         List<UserProfile> profiles = connections.stream()
-            .filter(connection -> connection.getTarget().getId().equals(userId) && connection.getStatus() == ConnectionStatus.PENDING)
+            .filter(connection -> connection.getStatus() == status)
             .map(ProfileConnection::getConnector)
             .toList();
 
@@ -249,6 +249,7 @@ public class UserService {
         profileConnection.setStatus(status);
 
         userProfileRepository.save(profileConnection.getConnector());
+        profileMatchRepository.deleteByMatchAndTarget(connectorId, targetId);
     }
 
     public String getCdnUrl(CloudItemDetails cloudItemDetails) {
