@@ -109,7 +109,7 @@ public class ChatService {
         notifyChatRoomParticipants(chatMessage);
     }
 
-    public void registerMediaMessageToChat(UploadedFile file, UUID chatId, UserAuth sender) {
+    public ChatMessageDto registerMediaMessageToChat(UploadedFile file, UUID chatId, UserAuth sender) {
         ChatRoom room = getChatRoomById(chatId);
         validateChatParticipant(room, sender.getId());
 
@@ -120,6 +120,8 @@ public class ChatService {
         chatMessageRepository.save(chatMessage);
 
         notifyChatRoomParticipants(chatMessage);
+
+        return ClassMapperUtil.mapClassIgnoreLazy(chatMessage, ChatMessageDto.class);
     }
 
     public void notifyChatRoomParticipants(ChatMessage chatMessage) {

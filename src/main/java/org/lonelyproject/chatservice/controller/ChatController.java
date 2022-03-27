@@ -44,10 +44,11 @@ public class ChatController {
     }
 
     @PostMapping("/{chatID}/message/media")
-    public void uploadChatMedia(@PathVariable UUID chatID, @AuthenticationPrincipal UserAuth auth, HttpServletRequest request) throws IOException {
+    public ChatMessageDto uploadChatMedia(@PathVariable UUID chatID, @AuthenticationPrincipal UserAuth auth, HttpServletRequest request)
+        throws IOException {
         UploadedFile file = fileService.handleFileUpload(request, -1).get(0);
 
-        chatService.registerMediaMessageToChat(file, chatID, auth);
+        return chatService.registerMediaMessageToChat(file, chatID, auth);
     }
 
     @GetMapping("/chatrooms")
