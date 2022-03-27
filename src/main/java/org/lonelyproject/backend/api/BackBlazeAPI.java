@@ -32,7 +32,7 @@ public class BackBlazeAPI {
         final B2ContentSource source = B2FileContentSource.builder(uploadedFile.file()).build();
 
         B2UploadFileRequest request = B2UploadFileRequest
-            .builder(bucketId, uploadedFile.name(), B2ContentTypes.APPLICATION_OCTET, source)
+            .builder(bucketId, uploadedFile.name(), B2ContentTypes.B2_AUTO, source)
             .build();
         try {
             return client.uploadSmallFile(request);
