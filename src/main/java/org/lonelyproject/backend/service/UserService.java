@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.lonelyproject.backend.api.BackBlazeAPI;
 import org.lonelyproject.backend.dto.InterestCategoryDto;
 import org.lonelyproject.backend.dto.InterestDto;
@@ -228,10 +229,11 @@ public class UserService {
     public List<UserProfileDto> getConnectionsByStatus(String userId, ConnectionStatus status) {
         UserProfile userProfile = getUserProfile(userId);
         List<ProfileConnection> connections = userProfile.getConnections();
-        
+
         List<UserProfile> profiles = connections.stream()
             .filter(connection -> connection.getStatus() == status)
-            .map(ProfileConnection::getConnector)
+            .flatMap(connection -> Stream.of(connection.getTarget(), connection.getConnector()))
+            .filter(profile -> !profile.getId().equals(userId))
             .toList();
 
         return mapListIgnoreLazyCollection(profiles, UserProfileDto.class);
