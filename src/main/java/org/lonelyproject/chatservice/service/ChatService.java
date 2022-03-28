@@ -93,6 +93,7 @@ public class ChatService {
 
             chatRoomDto.setIcon(receiver.getProfilePictureUrl());
             chatRoomDto.setName(receiver.getName());
+            chatRoomDto.setAbout(receiver.getAbout());
         }
         return chatRoomDto;
     }
