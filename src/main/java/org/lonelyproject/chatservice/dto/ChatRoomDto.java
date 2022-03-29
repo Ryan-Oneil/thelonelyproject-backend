@@ -13,6 +13,7 @@ public class ChatRoomDto implements Serializable {
     private String name;
     private ChatRoomType type;
     private String icon;
+    private String about;
     private List<UserProfileDto> participants;
     private List<ChatMessageDto> messages = new ArrayList<>();
 
@@ -76,14 +77,24 @@ public class ChatRoomDto implements Serializable {
         this.messages = messages;
     }
 
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" +
-            "id = " + id + ", " +
-            "name = " + name + ", " +
-            "type = " + type + ", " +
-            "icon = " + icon + ", " +
-            "participants = " + participants + ", " +
-            "messages = " + messages + ")";
+        return "ChatRoomDto{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", type=" + type +
+            ", icon='" + icon + '\'' +
+            ", about='" + about + '\'' +
+            ", participants=" + participants +
+            ", messages=" + messages +
+            '}';
     }
 }
