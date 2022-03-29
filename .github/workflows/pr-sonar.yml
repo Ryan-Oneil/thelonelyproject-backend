@@ -15,8 +15,12 @@ jobs:
         with:
           java-version: '16'
           distribution: 'adopt'
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.3
+        with:
+          maven-version: 3.8.2
       - name: Maven package
-        run: /actions-runner/apache-maven-3.8.4/bin/mvn --update-snapshots verify
+        run: mvn --update-snapshots verify
       - uses: sonarsource/sonarqube-scan-action@master
         name: Sonar scan
         with:
