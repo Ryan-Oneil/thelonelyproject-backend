@@ -82,7 +82,7 @@ class UserProfileRepositoryTest extends BaseRepository {
         List<UserProfile> profiles = userProfileRepository.findAllNotInList(List.of("1", "2"));
 
         assertThat(profiles).isNotEmpty();
-        assertThat(profiles.size()).isEqualTo(1);
+        assertThat(profiles.size()).isEqualTo(3);
         assertThat(profiles.get(0).getId()).isEqualTo("3");
     }
 

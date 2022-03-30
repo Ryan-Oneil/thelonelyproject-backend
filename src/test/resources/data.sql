@@ -4,6 +4,10 @@ insert into users
 values ('2', 'test2@lonelyproject.org', 'ROLE_USER');
 insert into users
 values ('3', 'test3@lonelyproject.org', 'ROLE_USER');
+insert into users
+values ('4', 'test4@lonelyproject.org', 'ROLE_USER');
+insert into users
+values ('5', 'test5@lonelyproject.org', 'ROLE_USER');
 
 insert into user_profile(name, about, user_id, picture_id)
 values ('test1', 'test', '1', null);
@@ -11,11 +15,23 @@ insert into user_profile(name, about, user_id, picture_id)
 values ('test2', 'test', '2', null);
 insert into user_profile(name, about, user_id, picture_id)
 values ('test3', 'test', '3', null);
+insert into user_profile(name, about, user_id, picture_id)
+values ('test4', 'test', '4', null);
+insert into user_profile(name, about, user_id, picture_id)
+values ('test5', 'test', '5', null);
 
 insert into profile_connection(status, connector_id, target_id)
 values ('PENDING', '1', '2');
 insert into profile_connection(status, connector_id, target_id)
 values ('CONNECTED', '1', '3');
+insert into profile_connection(status, connector_id, target_id)
+values ('PENDING', '4', '1');
+insert into profile_connection(status, connector_id, target_id)
+values ('CONNECTED', '4', '2');
+insert into profile_connection(status, connector_id, target_id)
+values ('CONNECTED', '4', '3');
+insert into profile_connection(status, connector_id, target_id)
+values ('DENIED', '4', '5');
 
 insert into profile_match (score, generated, profile_id, match_profile_id)
 values (0, '2022-03-25 00:41:30.269000', '1', '2');
