@@ -4,6 +4,10 @@ delete
 from profile_match;
 delete
 from profile_media;
+update user_profile
+set picture_id = null;
+delete
+from profile_picture;
 delete
 from cloud_item_details;
 delete

@@ -43,7 +43,7 @@ class ProfileTraitRepositoryTest extends BaseRepository {
 
     @Test
     void getTotalProfileInterestsTest() {
-        int count = profileTraitRepository.getTotalProfileInterests("1");
+        int count = profileTraitRepository.getTotalProfileInterests("2");
 
         assertThat(count).isEqualTo(1);
     }
