@@ -12,6 +12,7 @@ import org.lonelyproject.backend.entities.ProfileMatch;
 import org.lonelyproject.backend.entities.UserInterest;
 import org.lonelyproject.backend.entities.UserProfile;
 import org.lonelyproject.backend.enums.ConnectionStatus;
+import org.lonelyproject.backend.exception.ProfileException;
 import org.lonelyproject.backend.repository.ProfileMatchRepository;
 import org.lonelyproject.backend.repository.UserProfileRepository;
 import org.lonelyproject.backend.util.ClassMapperUtil;
@@ -29,7 +30,7 @@ public class MatchingService {
     }
 
     public UserProfile getUserProfile(String userId) {
-        return userProfileRepository.getUserProfileByUserId(userId).orElseThrow(() -> new RuntimeException("User doesn't exist"));
+        return userProfileRepository.getUserProfileByUserId(userId).orElseThrow(() -> new ProfileException("User doesn't exist"));
     }
 
     public List<UserProfileDto> getMatches(String userId) {

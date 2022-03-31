@@ -6,8 +6,10 @@ import com.google.firebase.FirebaseOptions;
 import java.io.IOException;
 import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
+@Profile("!mvn-test")
 public class FirebaseConfig {
 
     @PostConstruct

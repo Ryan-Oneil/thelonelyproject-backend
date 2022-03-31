@@ -20,8 +20,7 @@ public interface UserProfileRepository extends CrudRepository<UserProfile, Strin
     Optional<UserProfile> getProfileConnection(String profileTargetId, String connectorId);
 
     @Query(
-        "select case when count(pc)> 0 then true else false end from ProfileConnection pc where pc.status = 'CONNECTED' and (pc.id.connectorId = ?1 and pc.id.targetId = ?2) "
-            + "OR (pc.id.connectorId = ?2 and pc.id.targetId = ?1)")
+        "select case when count(pc)> 0 then true else false end from ProfileConnection pc where pc.status = 'CONNECTED' and ((pc.id.connectorId = ?1 and pc.id.targetId = ?2) OR (pc.id.connectorId = ?2 and pc.id.targetId = ?1))")
     boolean isConnected(String connectorId, String userId);
 
     @Query("select p from UserProfile p where p.id not in (?1)")

@@ -43,7 +43,6 @@ public class FileService {
         try {
             iterator = upload.getItemIterator(request);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new FileNotFoundException("No form data");
         }
 

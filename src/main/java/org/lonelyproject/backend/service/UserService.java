@@ -68,7 +68,7 @@ public class UserService {
     }
 
     public UserProfile getUserProfile(String userId) {
-        return userProfileRepository.getUserProfileByUserId(userId).orElseThrow(() -> new RuntimeException("User doesn't exist"));
+        return userProfileRepository.getUserProfileByUserId(userId).orElseThrow(() -> new ProfileException("User doesn't exist"));
     }
 
     public UserProfileDto getPublicUserProfile(String userId, String requester) {

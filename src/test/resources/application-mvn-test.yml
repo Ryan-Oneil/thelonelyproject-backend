@@ -1,0 +1,38 @@
+server:
+  port: 8080
+  tempDirectory: F:\media\test
+
+logging.level.org.springframework.web: DEBUG
+
+spring:
+  servlet:
+    multipart:
+      enabled: false
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:postgresql:13.2:////tests
+    username: test
+    password: test
+  jpa:
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+  ssl: false
+  test:
+    database:
+      replace: none
+  liquibase:
+    change-log: db.changelog-master.yaml
+cdn:
+  url: https://cdn.lonelyproject.org/file
+
+backblaze:
+  authToken: none
+  appId: 123
+  appKey: 123
+  url: https://api001.backblazeb2.com
+  buckets:
+    avatars:
+      id: 4b83175351b6fd4178e50519
+      name: lp-avatars
+
