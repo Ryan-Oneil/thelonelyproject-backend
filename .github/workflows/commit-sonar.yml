@@ -18,7 +18,7 @@ jobs:
         with:
           maven-version: 3.8.2
       - name: Maven verify & package
-        run: mvn --update-snapshots verify
+        run: mvn --update-snapshots verify -Dspring.profiles.active=mvn-test
       - uses: sonarsource/sonarqube-scan-action@master
         with:
           args: >
