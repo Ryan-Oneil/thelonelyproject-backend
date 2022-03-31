@@ -83,7 +83,6 @@ class UserProfileRepositoryTest extends BaseRepository {
 
         assertThat(profiles).isNotEmpty();
         assertThat(profiles.size()).isEqualTo(3);
-        assertThat(profiles.get(0).getId()).isEqualTo("3");
     }
 
     @Test

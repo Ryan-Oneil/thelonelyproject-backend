@@ -1,4 +1,12 @@
 delete
+from chat_shared_media;
+delete
+from chat_message;
+delete
+from chat_room_participant;
+delete
+from chat_room;
+delete
 from profile_connection;
 delete
 from profile_match;

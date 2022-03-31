@@ -39,7 +39,7 @@ insert into profile_match (score, generated, profile_id, match_profile_id)
 values (0, '2022-03-25 00:41:30.269000', '1', '3');
 
 insert into cloud_item_details(id, external_id, name, size, container_name)
-VALUES ('1', '1', 'test', 0, 'test');
+VALUES (1, '1', 'test', 0, 'test');
 insert into cloud_item_details(id, external_id, name, size, container_name)
 VALUES (2, '2', 'test2', 0, 'test');
 
@@ -102,3 +102,22 @@ values (1, 'test');
 
 insert into user_prompt (user_profile_id, text, trait_id)
 values ('1', 'test', 1);
+
+insert into chat_room(id, name, type, icon)
+VALUES ('95c97c8a-7fe3-4aed-9ceb-26acad52575e', 'test', 'DIRECT', '');
+
+insert into chat_room_participant(chatroom_id, user_profile_id)
+VALUES ('95c97c8a-7fe3-4aed-9ceb-26acad52575e', '1');
+insert into chat_room_participant(chatroom_id, user_profile_id)
+VALUES ('95c97c8a-7fe3-4aed-9ceb-26acad52575e', '2');
+
+insert into chat_message(chat_room_id, sender_id, content, timestamp)
+VALUES ('95c97c8a-7fe3-4aed-9ceb-26acad52575e', '2', 'test', '2022-03-25 00:41:30.269000');
+insert into chat_message(chat_room_id, sender_id, content, timestamp)
+VALUES ('95c97c8a-7fe3-4aed-9ceb-26acad52575e', '1', 'test', '2022-03-25 00:41:30.269000');
+
+SELECT setval('cloud_item_details_id_seq', (SELECT MAX(id) FROM cloud_item_details));
+SELECT setval('profile_media_id_seq', (SELECT MAX(id) FROM profile_media));
+SELECT setval('chat_message_id_seq', (SELECT MAX(id) FROM chat_message));
+SELECT setval('chat_shared_media_id_seq', (SELECT MAX(id) FROM chat_shared_media));
+SELECT setval('profile_picture_id_seq', (SELECT MAX(id) FROM profile_picture));
