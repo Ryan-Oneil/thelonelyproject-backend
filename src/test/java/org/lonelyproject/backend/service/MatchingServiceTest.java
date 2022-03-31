@@ -74,7 +74,7 @@ class MatchingServiceTest extends BaseServiceTest {
 
         ProfileMatch profileMatch = matchingService.calculateMatchScore(userProfile1, userProfile2);
 
-        assertThat(profileMatch.getScore()).isEqualTo(1.5);
+        assertThat(profileMatch.getScore()).isEqualTo(2.0);
     }
 
     @Test

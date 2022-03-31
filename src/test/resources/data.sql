@@ -21,7 +21,7 @@ insert into user_profile(name, about, user_id, picture_id)
 values ('test5', 'test', '5', null);
 
 insert into profile_connection(status, connector_id, target_id)
-values ('PENDING', '1', '2');
+values ('CONNECTED', '1', '2');
 insert into profile_connection(status, connector_id, target_id)
 values ('CONNECTED', '1', '3');
 insert into profile_connection(status, connector_id, target_id)
@@ -46,9 +46,16 @@ VALUES (2, '2', 'test2', 0, 'test');
 insert into profile_picture(id, cloud_item_detail_id, url, user_profile_user_id)
 VALUES (1, 2, 'test', '3');
 
+insert into profile_picture(id, cloud_item_detail_id, url, user_profile_user_id)
+VALUES (2, 2, 'test2', '2');
+
 update user_profile
 set picture_id = 1
 where user_id = '3';
+
+update user_profile
+set picture_id = 2
+where user_id = '2';
 
 insert into profile_media(id, cloud_item_detail_id, url, type, user_profile_user_id)
 values (1, '1', 'test', 'IMAGE', '1');
@@ -114,7 +121,7 @@ VALUES ('95c97c8a-7fe3-4aed-9ceb-26acad52575e', '2');
 insert into chat_message(chat_room_id, sender_id, content, timestamp)
 VALUES ('95c97c8a-7fe3-4aed-9ceb-26acad52575e', '2', 'test', '2022-03-25 00:41:30.269000');
 insert into chat_message(chat_room_id, sender_id, content, timestamp)
-VALUES ('95c97c8a-7fe3-4aed-9ceb-26acad52575e', '1', 'test', '2022-03-25 00:41:30.269000');
+VALUES ('95c97c8a-7fe3-4aed-9ceb-26acad52575e', '1', 'last', '2022-03-26 01:42:30.269000');
 
 SELECT setval('cloud_item_details_id_seq', (SELECT MAX(id) FROM cloud_item_details));
 SELECT setval('profile_media_id_seq', (SELECT MAX(id) FROM profile_media));

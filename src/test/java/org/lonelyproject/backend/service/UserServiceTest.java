@@ -61,7 +61,7 @@ class UserServiceTest extends BaseServiceTest {
     @Test
     @Transactional
     void getPublicUserProfileTest() {
-        UserProfileDto userProfileDto = userService.getPublicUserProfile("2", "1");
+        UserProfileDto userProfileDto = userService.getPublicUserProfile("4", "1");
 
         assertThat(userProfileDto.getConnection().isAttemptingToConnect()).isTrue();
         assertThat(userProfileDto.getConnection().getConnectionStatus()).hasToString("PENDING");
@@ -70,7 +70,7 @@ class UserServiceTest extends BaseServiceTest {
     @Test
     @Transactional
     void getPublicUserProfileTest2() {
-        UserProfileDto userProfileDto = userService.getPublicUserProfile("3", "1");
+        UserProfileDto userProfileDto = userService.getPublicUserProfile("1", "2");
 
         assertThat(userProfileDto.getConnection().isAttemptingToConnect()).isFalse();
         assertThat(userProfileDto.getConnection().getConnectionStatus()).hasToString("CONNECTED");
@@ -212,7 +212,7 @@ class UserServiceTest extends BaseServiceTest {
     void getConnectionsByStatusTest() {
         List<UserProfileDto> profileDtos = userService.getConnectionsByStatus("1", ConnectionStatus.PENDING);
 
-        assertThat(profileDtos.size()).isEqualTo(2);
+        assertThat(profileDtos.size()).isEqualTo(1);
     }
 
     @Test

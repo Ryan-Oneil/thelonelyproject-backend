@@ -72,7 +72,7 @@ class UserProfileRepositoryTest extends BaseRepository {
 
     @Test
     void isConnectedInValidTest() {
-        boolean isConnected = userProfileRepository.isConnected("1", "2");
+        boolean isConnected = userProfileRepository.isConnected("1", "4");
 
         assertThat(isConnected).isFalse();
     }

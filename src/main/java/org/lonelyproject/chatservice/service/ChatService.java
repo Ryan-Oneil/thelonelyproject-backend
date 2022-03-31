@@ -11,7 +11,6 @@ import org.lonelyproject.backend.dto.UserProfileDto;
 import org.lonelyproject.backend.entities.CloudItemDetails;
 import org.lonelyproject.backend.entities.User;
 import org.lonelyproject.backend.entities.UserProfile;
-import org.lonelyproject.backend.exception.ProfileException;
 import org.lonelyproject.backend.exception.ResourceNotFound;
 import org.lonelyproject.backend.repository.UserProfileRepository;
 import org.lonelyproject.backend.security.UserAuth;
@@ -61,7 +60,7 @@ public class ChatService {
     }
 
     public ChatRoom getChatRoomById(UUID roomId) {
-        return chatRoomRepository.findById(roomId).orElseThrow(() -> new ResourceNotFound("Chat room doesn't exist"));
+        return chatRoomRepository.findById(roomId).orElseThrow(() -> new ResourceNotFound("Chat doesn't exist"));
     }
 
     public List<ChatRoomDto> getUsersChatroom(String userId) {
@@ -158,7 +157,7 @@ public class ChatService {
 
     public ChatRoomDto getOrCreateChat(String requesterId, String targetId) {
         if (!profileRepository.isConnected(requesterId, targetId)) {
-            throw new ProfileException("You must be connected with this user to start a chat");
+            throw new AccessDeniedException("You must be connected with this user to start a chat");
         }
         ChatRoom chatRoom = chatRoomRepository.getChatRoomByParticipants(requesterId, targetId).orElseGet(() -> {
             ChatRoom newRoom = new ChatRoom(UUID.randomUUID(), ChatRoomType.DIRECT);
