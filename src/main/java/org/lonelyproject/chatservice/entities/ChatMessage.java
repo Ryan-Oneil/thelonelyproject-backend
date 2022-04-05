@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import org.lonelyproject.backend.entities.User;
+import org.lonelyproject.userprofileservice.entities.User;
 
 @Entity
 public class ChatMessage {

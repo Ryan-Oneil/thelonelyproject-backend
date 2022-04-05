@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.entities;
+package org.lonelyproject.userprofileservice.entities;
 
 import java.util.ArrayList;
 import java.util.Collection;

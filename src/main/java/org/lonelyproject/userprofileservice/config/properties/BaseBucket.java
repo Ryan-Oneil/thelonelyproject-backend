@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.config.properties;
+package org.lonelyproject.userprofileservice.config.properties;
 
 public record BaseBucket(String id, String name) {
 

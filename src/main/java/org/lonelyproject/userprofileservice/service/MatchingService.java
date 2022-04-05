@@ -1,21 +1,21 @@
-package org.lonelyproject.backend.service;
+package org.lonelyproject.userprofileservice.service;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.lonelyproject.backend.dto.UserProfileDto;
-import org.lonelyproject.backend.entities.Interest;
-import org.lonelyproject.backend.entities.InterestCategory;
-import org.lonelyproject.backend.entities.ProfileMatch;
-import org.lonelyproject.backend.entities.UserInterest;
-import org.lonelyproject.backend.entities.UserProfile;
-import org.lonelyproject.backend.enums.ConnectionStatus;
-import org.lonelyproject.backend.exception.ProfileException;
-import org.lonelyproject.backend.repository.ProfileMatchRepository;
-import org.lonelyproject.backend.repository.UserProfileRepository;
-import org.lonelyproject.backend.util.ClassMapperUtil;
+import org.lonelyproject.userprofileservice.dto.UserProfileDto;
+import org.lonelyproject.userprofileservice.entities.Interest;
+import org.lonelyproject.userprofileservice.entities.InterestCategory;
+import org.lonelyproject.userprofileservice.entities.ProfileMatch;
+import org.lonelyproject.userprofileservice.entities.UserInterest;
+import org.lonelyproject.userprofileservice.entities.UserProfile;
+import org.lonelyproject.userprofileservice.enums.ConnectionStatus;
+import org.lonelyproject.userprofileservice.exception.ProfileException;
+import org.lonelyproject.userprofileservice.repository.ProfileMatchRepository;
+import org.lonelyproject.userprofileservice.repository.UserProfileRepository;
+import org.lonelyproject.userprofileservice.util.ClassMapperUtil;
 import org.springframework.stereotype.Service;
 
 @Service

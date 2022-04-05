@@ -1,8 +1,8 @@
-package org.lonelyproject.backend.repository;
+package org.lonelyproject.userprofileservice.repository;
 
 import java.util.Optional;
-import org.lonelyproject.backend.entities.ProfileMedia;
-import org.lonelyproject.backend.entities.supers.CloudItem;
+import org.lonelyproject.userprofileservice.entities.ProfileMedia;
+import org.lonelyproject.userprofileservice.entities.supers.CloudItem;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 

@@ -1,6 +1,6 @@
-package org.lonelyproject.backend.security;
+package org.lonelyproject.userprofileservice.security;
 
-import org.lonelyproject.backend.enums.UserRole;
+import org.lonelyproject.userprofileservice.enums.UserRole;
 
 public class SecurityConstants {
 

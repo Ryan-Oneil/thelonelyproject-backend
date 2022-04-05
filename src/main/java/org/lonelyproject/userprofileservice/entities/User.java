@@ -1,11 +1,11 @@
-package org.lonelyproject.backend.entities;
+package org.lonelyproject.userprofileservice.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
-import org.lonelyproject.backend.enums.UserRole;
+import org.lonelyproject.userprofileservice.enums.UserRole;
 
 @Entity(name = "users")
 public class User {

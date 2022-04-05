@@ -1,10 +1,10 @@
-package org.lonelyproject.backend.entities;
+package org.lonelyproject.userprofileservice.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import org.lonelyproject.backend.entities.compositeids.ProfileTraitId;
-import org.lonelyproject.backend.entities.supers.ProfileTraitRelation;
+import org.lonelyproject.userprofileservice.entities.compositeids.ProfileTraitId;
+import org.lonelyproject.userprofileservice.entities.supers.ProfileTraitRelation;
 
 @Entity
 public class UserInterest extends ProfileTraitRelation {

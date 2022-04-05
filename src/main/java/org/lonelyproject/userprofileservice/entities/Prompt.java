@@ -1,9 +1,9 @@
-package org.lonelyproject.backend.entities;
+package org.lonelyproject.userprofileservice.entities;
 
 import javax.persistence.Entity;
-import org.lonelyproject.backend.entities.supers.ProfileTrait;
+import org.lonelyproject.userprofileservice.entities.supers.ProfileTrait;
 
 @Entity
 public class Prompt extends ProfileTrait {
-    
+
 }

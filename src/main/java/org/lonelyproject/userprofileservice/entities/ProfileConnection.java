@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.entities;
+package org.lonelyproject.userprofileservice.entities;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -7,8 +7,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import org.lonelyproject.backend.entities.compositeids.ConnectionId;
-import org.lonelyproject.backend.enums.ConnectionStatus;
+import org.lonelyproject.userprofileservice.entities.compositeids.ConnectionId;
+import org.lonelyproject.userprofileservice.enums.ConnectionStatus;
 
 @Entity
 public class ProfileConnection {

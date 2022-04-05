@@ -1,8 +1,8 @@
-package org.lonelyproject.backend.security;
+package org.lonelyproject.userprofileservice.security;
 
-import static org.lonelyproject.backend.security.SecurityConstants.DEFAULT_USER_ROLE;
-import static org.lonelyproject.backend.security.SecurityConstants.HEADER_STRING;
-import static org.lonelyproject.backend.security.SecurityConstants.JWT_ROLE_KEY;
+import static org.lonelyproject.userprofileservice.security.SecurityConstants.DEFAULT_USER_ROLE;
+import static org.lonelyproject.userprofileservice.security.SecurityConstants.HEADER_STRING;
+import static org.lonelyproject.userprofileservice.security.SecurityConstants.JWT_ROLE_KEY;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;

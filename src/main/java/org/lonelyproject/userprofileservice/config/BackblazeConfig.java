@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.config;
+package org.lonelyproject.userprofileservice.config;
 
 import com.backblaze.b2.client.B2StorageClient;
 import com.backblaze.b2.client.B2StorageClientFactory;

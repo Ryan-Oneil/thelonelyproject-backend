@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
-import org.lonelyproject.backend.repository.BaseRepository;
+import org.lonelyproject.userprofileservice.repository.BaseRepository;
 import org.lonelyproject.chatservice.entities.ChatRoom;
 import org.springframework.beans.factory.annotation.Autowired;
 

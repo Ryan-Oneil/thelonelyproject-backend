@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.service;
+package org.lonelyproject.userprofileservice.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,10 +7,10 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.lonelyproject.backend.dto.UserProfileDto;
-import org.lonelyproject.backend.entities.ProfileMatch;
-import org.lonelyproject.backend.entities.UserProfile;
-import org.lonelyproject.backend.exception.ProfileException;
+import org.lonelyproject.userprofileservice.dto.UserProfileDto;
+import org.lonelyproject.userprofileservice.entities.ProfileMatch;
+import org.lonelyproject.userprofileservice.entities.UserProfile;
+import org.lonelyproject.userprofileservice.exception.ProfileException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class MatchingServiceTest extends BaseServiceTest {

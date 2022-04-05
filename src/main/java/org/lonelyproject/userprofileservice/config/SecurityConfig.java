@@ -1,8 +1,8 @@
-package org.lonelyproject.backend.config;
+package org.lonelyproject.userprofileservice.config;
 
-import org.lonelyproject.backend.security.FirebaseAuthorizationFilter;
-import org.lonelyproject.backend.security.RestAccessDeniedHandler;
-import org.lonelyproject.backend.security.RestAuthenticationEntryPoint;
+import org.lonelyproject.userprofileservice.security.FirebaseAuthorizationFilter;
+import org.lonelyproject.userprofileservice.security.RestAccessDeniedHandler;
+import org.lonelyproject.userprofileservice.security.RestAuthenticationEntryPoint;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;

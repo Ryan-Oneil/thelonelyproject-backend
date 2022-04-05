@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.api;
+package org.lonelyproject.userprofileservice.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,8 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.lonelyproject.backend.dto.UploadedFile;
-import org.lonelyproject.backend.entities.CloudItemDetails;
+import org.lonelyproject.userprofileservice.dto.UploadedFile;
+import org.lonelyproject.userprofileservice.entities.CloudItemDetails;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

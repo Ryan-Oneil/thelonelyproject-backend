@@ -1,8 +1,8 @@
-package org.lonelyproject.backend.repository;
+package org.lonelyproject.userprofileservice.repository;
 
 import java.util.List;
 import java.util.Optional;
-import org.lonelyproject.backend.entities.UserProfile;
+import org.lonelyproject.userprofileservice.entities.UserProfile;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 

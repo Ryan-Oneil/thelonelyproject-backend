@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.config.properties;
+package org.lonelyproject.userprofileservice.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;

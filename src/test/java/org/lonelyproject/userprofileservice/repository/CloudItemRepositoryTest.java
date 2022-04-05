@@ -1,10 +1,10 @@
-package org.lonelyproject.backend.repository;
+package org.lonelyproject.userprofileservice.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.lonelyproject.backend.entities.ProfileMedia;
+import org.lonelyproject.userprofileservice.entities.ProfileMedia;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class CloudItemRepositoryTest extends BaseRepository {

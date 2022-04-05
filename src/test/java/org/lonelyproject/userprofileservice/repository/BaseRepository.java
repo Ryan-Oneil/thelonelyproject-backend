@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.repository;
+package org.lonelyproject.userprofileservice.repository;
 
 import org.junit.ClassRule;
 import org.junit.jupiter.api.AfterEach;

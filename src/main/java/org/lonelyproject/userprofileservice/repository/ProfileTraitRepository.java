@@ -1,12 +1,12 @@
-package org.lonelyproject.backend.repository;
+package org.lonelyproject.userprofileservice.repository;
 
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
-import org.lonelyproject.backend.entities.Interest;
-import org.lonelyproject.backend.entities.InterestCategory;
-import org.lonelyproject.backend.entities.Prompt;
-import org.lonelyproject.backend.entities.supers.ProfileTrait;
+import org.lonelyproject.userprofileservice.entities.Interest;
+import org.lonelyproject.userprofileservice.entities.InterestCategory;
+import org.lonelyproject.userprofileservice.entities.Prompt;
+import org.lonelyproject.userprofileservice.entities.supers.ProfileTrait;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

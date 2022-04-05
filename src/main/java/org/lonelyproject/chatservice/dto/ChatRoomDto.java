@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.lonelyproject.backend.dto.UserProfileDto;
+import org.lonelyproject.userprofileservice.dto.UserProfileDto;
 import org.lonelyproject.chatservice.enums.ChatRoomType;
 
 public class ChatRoomDto implements Serializable {

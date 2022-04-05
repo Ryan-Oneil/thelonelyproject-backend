@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.exception;
+package org.lonelyproject.userprofileservice.exception;
 
 public class ResourceNotFound extends RuntimeException {
 

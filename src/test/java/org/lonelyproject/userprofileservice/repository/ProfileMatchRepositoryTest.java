@@ -1,11 +1,11 @@
-package org.lonelyproject.backend.repository;
+package org.lonelyproject.userprofileservice.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.lonelyproject.backend.entities.ProfileMatch;
-import org.lonelyproject.backend.entities.compositeids.MatchId;
+import org.lonelyproject.userprofileservice.entities.ProfileMatch;
+import org.lonelyproject.userprofileservice.entities.compositeids.MatchId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ProfileMatchRepositoryTest extends BaseRepository {

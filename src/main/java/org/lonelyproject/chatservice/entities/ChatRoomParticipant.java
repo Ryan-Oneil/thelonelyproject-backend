@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import org.lonelyproject.backend.entities.UserProfile;
+import org.lonelyproject.userprofileservice.entities.UserProfile;
 import org.lonelyproject.chatservice.entities.compositeids.ParticipantId;
 
 @Entity

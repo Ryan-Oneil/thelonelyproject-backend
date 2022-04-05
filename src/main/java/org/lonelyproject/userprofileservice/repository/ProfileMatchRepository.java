@@ -1,9 +1,9 @@
-package org.lonelyproject.backend.repository;
+package org.lonelyproject.userprofileservice.repository;
 
 import java.util.List;
 import javax.transaction.Transactional;
-import org.lonelyproject.backend.entities.ProfileMatch;
-import org.lonelyproject.backend.entities.compositeids.MatchId;
+import org.lonelyproject.userprofileservice.entities.ProfileMatch;
+import org.lonelyproject.userprofileservice.entities.compositeids.MatchId;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

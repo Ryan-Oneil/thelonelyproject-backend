@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.security;
+package org.lonelyproject.userprofileservice.security;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;

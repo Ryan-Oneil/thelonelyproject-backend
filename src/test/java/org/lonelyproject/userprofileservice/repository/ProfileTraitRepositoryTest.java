@@ -1,13 +1,13 @@
-package org.lonelyproject.backend.repository;
+package org.lonelyproject.userprofileservice.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.lonelyproject.backend.entities.Interest;
-import org.lonelyproject.backend.entities.InterestCategory;
-import org.lonelyproject.backend.entities.supers.ProfileTrait;
+import org.lonelyproject.userprofileservice.entities.Interest;
+import org.lonelyproject.userprofileservice.entities.InterestCategory;
+import org.lonelyproject.userprofileservice.entities.supers.ProfileTrait;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class ProfileTraitRepositoryTest extends BaseRepository {

@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.security;
+package org.lonelyproject.userprofileservice.security;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,11 +1,11 @@
-package org.lonelyproject.backend.repository;
+package org.lonelyproject.userprofileservice.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.lonelyproject.backend.entities.UserProfile;
+import org.lonelyproject.userprofileservice.entities.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class UserProfileRepositoryTest extends BaseRepository {

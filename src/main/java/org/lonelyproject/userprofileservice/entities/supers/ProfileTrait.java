@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.entities.supers;
+package org.lonelyproject.userprofileservice.entities.supers;
 
 import java.io.Serializable;
 import javax.persistence.Column;

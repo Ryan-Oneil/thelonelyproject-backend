@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.service;
+package org.lonelyproject.userprofileservice.service;
 
 import org.junit.ClassRule;
 import org.junit.jupiter.api.extension.ExtendWith;

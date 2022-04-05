@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.entities;
+package org.lonelyproject.userprofileservice.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -6,8 +6,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import org.lonelyproject.backend.entities.supers.CloudItem;
-import org.lonelyproject.backend.enums.MediaType;
+import org.lonelyproject.userprofileservice.entities.supers.CloudItem;
+import org.lonelyproject.userprofileservice.enums.MediaType;
 
 @Entity
 public class ProfileMedia extends CloudItem {

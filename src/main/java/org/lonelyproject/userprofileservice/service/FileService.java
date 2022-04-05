@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.service;
+package org.lonelyproject.userprofileservice.service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.http.fileupload.FileItemIterator;
 import org.apache.tomcat.util.http.fileupload.FileItemStream;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
-import org.lonelyproject.backend.dto.UploadedFile;
+import org.lonelyproject.userprofileservice.dto.UploadedFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

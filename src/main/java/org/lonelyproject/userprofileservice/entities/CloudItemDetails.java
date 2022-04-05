@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.entities;
+package org.lonelyproject.userprofileservice.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

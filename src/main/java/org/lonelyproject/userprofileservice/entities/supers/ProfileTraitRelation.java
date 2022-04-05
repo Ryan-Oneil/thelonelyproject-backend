@@ -1,11 +1,11 @@
-package org.lonelyproject.backend.entities.supers;
+package org.lonelyproject.userprofileservice.entities.supers;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import org.lonelyproject.backend.entities.UserProfile;
-import org.lonelyproject.backend.entities.compositeids.ProfileTraitId;
+import org.lonelyproject.userprofileservice.entities.UserProfile;
+import org.lonelyproject.userprofileservice.entities.compositeids.ProfileTraitId;
 
 @MappedSuperclass
 public class ProfileTraitRelation {

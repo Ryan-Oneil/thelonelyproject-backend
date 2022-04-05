@@ -3,8 +3,8 @@ package org.lonelyproject.chatservice.entities;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import org.lonelyproject.backend.entities.CloudItemDetails;
-import org.lonelyproject.backend.entities.supers.CloudItem;
+import org.lonelyproject.userprofileservice.entities.CloudItemDetails;
+import org.lonelyproject.userprofileservice.entities.supers.CloudItem;
 
 @Entity
 public class ChatSharedMedia extends CloudItem {

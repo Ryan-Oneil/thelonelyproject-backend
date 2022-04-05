@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.service;
+package org.lonelyproject.userprofileservice.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,19 +10,19 @@ import javax.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.lonelyproject.backend.api.BackBlazeAPI;
-import org.lonelyproject.backend.dto.InterestCategoryDto;
-import org.lonelyproject.backend.dto.InterestDto;
-import org.lonelyproject.backend.dto.ProfileMediaDto;
-import org.lonelyproject.backend.dto.PromptDto;
-import org.lonelyproject.backend.dto.UploadedFile;
-import org.lonelyproject.backend.dto.UserProfileDto;
-import org.lonelyproject.backend.entities.CloudItemDetails;
-import org.lonelyproject.backend.entities.UserProfile;
-import org.lonelyproject.backend.enums.ConnectionStatus;
-import org.lonelyproject.backend.exception.ProfileException;
-import org.lonelyproject.backend.repository.UserProfileRepository;
-import org.lonelyproject.backend.security.UserAuth;
+import org.lonelyproject.userprofileservice.api.BackBlazeAPI;
+import org.lonelyproject.userprofileservice.dto.InterestCategoryDto;
+import org.lonelyproject.userprofileservice.dto.InterestDto;
+import org.lonelyproject.userprofileservice.dto.ProfileMediaDto;
+import org.lonelyproject.userprofileservice.dto.PromptDto;
+import org.lonelyproject.userprofileservice.dto.UploadedFile;
+import org.lonelyproject.userprofileservice.dto.UserProfileDto;
+import org.lonelyproject.userprofileservice.entities.CloudItemDetails;
+import org.lonelyproject.userprofileservice.entities.UserProfile;
+import org.lonelyproject.userprofileservice.enums.ConnectionStatus;
+import org.lonelyproject.userprofileservice.exception.ProfileException;
+import org.lonelyproject.userprofileservice.repository.UserProfileRepository;
+import org.lonelyproject.userprofileservice.security.UserAuth;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

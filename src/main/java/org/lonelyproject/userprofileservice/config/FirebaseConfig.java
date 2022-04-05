@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.config;
+package org.lonelyproject.userprofileservice.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;

@@ -1,8 +1,8 @@
-package org.lonelyproject.backend.entities;
+package org.lonelyproject.userprofileservice.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
-import org.lonelyproject.backend.entities.supers.CloudItem;
+import org.lonelyproject.userprofileservice.entities.supers.CloudItem;
 
 @Entity
 public class ProfilePicture extends CloudItem {

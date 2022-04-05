@@ -1,11 +1,11 @@
-package org.lonelyproject.backend.entities;
+package org.lonelyproject.userprofileservice.entities;
 
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import org.lonelyproject.backend.entities.supers.ProfileTrait;
+import org.lonelyproject.userprofileservice.entities.supers.ProfileTrait;
 
 @Entity
 public class InterestCategory extends ProfileTrait {

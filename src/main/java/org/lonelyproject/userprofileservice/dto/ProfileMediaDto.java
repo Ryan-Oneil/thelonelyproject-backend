@@ -1,7 +1,7 @@
-package org.lonelyproject.backend.dto;
+package org.lonelyproject.userprofileservice.dto;
 
 import java.io.Serializable;
-import org.lonelyproject.backend.enums.MediaType;
+import org.lonelyproject.userprofileservice.enums.MediaType;
 
 public class ProfileMediaDto implements Serializable {
 

@@ -1,7 +1,7 @@
-package org.lonelyproject.backend.dto;
+package org.lonelyproject.userprofileservice.dto;
 
 import java.io.Serializable;
-import org.lonelyproject.backend.enums.ConnectionStatus;
+import org.lonelyproject.userprofileservice.enums.ConnectionStatus;
 
 public class ProfileConnectionDto implements Serializable {
 

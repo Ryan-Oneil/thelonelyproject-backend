@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.entities.compositeids;
+package org.lonelyproject.userprofileservice.entities.compositeids;
 
 import java.io.Serializable;
 import java.util.Objects;

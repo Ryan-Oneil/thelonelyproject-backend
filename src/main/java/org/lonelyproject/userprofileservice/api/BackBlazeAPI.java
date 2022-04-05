@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.api;
+package org.lonelyproject.userprofileservice.api;
 
 import com.backblaze.b2.client.B2StorageClient;
 import com.backblaze.b2.client.contentSources.B2ContentSource;
@@ -9,10 +9,10 @@ import com.backblaze.b2.client.structures.B2FileVersion;
 import com.backblaze.b2.client.structures.B2UploadFileRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lonelyproject.backend.config.properties.BucketInfo;
-import org.lonelyproject.backend.dto.UploadedFile;
-import org.lonelyproject.backend.entities.CloudItemDetails;
-import org.lonelyproject.backend.exception.UploadException;
+import org.lonelyproject.userprofileservice.config.properties.BucketInfo;
+import org.lonelyproject.userprofileservice.dto.UploadedFile;
+import org.lonelyproject.userprofileservice.entities.CloudItemDetails;
+import org.lonelyproject.userprofileservice.exception.UploadException;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.enums;
+package org.lonelyproject.userprofileservice.enums;
 
 public enum ConnectionStatus {
     NONE,

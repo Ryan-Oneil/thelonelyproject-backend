@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.entities.supers;
+package org.lonelyproject.userprofileservice.entities.supers;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import org.lonelyproject.backend.entities.CloudItemDetails;
+import org.lonelyproject.userprofileservice.entities.CloudItemDetails;
 
 @MappedSuperclass
 public class CloudItem {

@@ -1,4 +1,4 @@
-package org.lonelyproject.backend.util;
+package org.lonelyproject.userprofileservice.util;
 
 import java.util.List;
 import org.hibernate.collection.spi.PersistentCollection;
