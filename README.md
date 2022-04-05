@@ -20,6 +20,7 @@ Live site deployed on Cloudflare pages [https://lonelyproject.org](https://githu
 ### Running locally
 
 docker pull ghcr.io/ryan-oneil/thelonelyproject-backend:master
+
 docker run -d --name=lonelyproject-backend -p 80:8080 ghcr.io/ryan-oneil/thelonelyproject-backend:master
 
 #### Environment Variables
