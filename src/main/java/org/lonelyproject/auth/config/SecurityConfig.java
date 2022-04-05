@@ -34,7 +34,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests()
             .antMatchers("/ws/**").permitAll()
-            .antMatchers("/admin/**", "/**/admin/**", "/actuator/**").access("hasRole('ROLE_ADMIN')")
             .anyRequest().authenticated()
             .and()
             .addFilterBefore(firebaseAuthorizationFilter, BasicAuthenticationFilter.class)

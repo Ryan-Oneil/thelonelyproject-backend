@@ -1,4 +1,4 @@
-package org.lonelyproject.chatservice.config;
+package org.lonelyproject.auth.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
