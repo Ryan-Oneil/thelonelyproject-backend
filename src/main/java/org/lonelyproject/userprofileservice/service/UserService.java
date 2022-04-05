@@ -1,6 +1,6 @@
 package org.lonelyproject.userprofileservice.service;
 
-import static org.lonelyproject.userprofileservice.security.SecurityConstants.JWT_ROLE_KEY;
+import static org.lonelyproject.auth.config.SecurityConstants.JWT_ROLE_KEY;
 import static org.lonelyproject.userprofileservice.util.ClassMapperUtil.mapClass;
 import static org.lonelyproject.userprofileservice.util.ClassMapperUtil.mapList;
 import static org.lonelyproject.userprofileservice.util.ClassMapperUtil.mapListIgnoreLazyCollection;
@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
+import org.lonelyproject.auth.dto.UserAuth;
 import org.lonelyproject.userprofileservice.api.BackBlazeAPI;
 import org.lonelyproject.userprofileservice.dto.InterestCategoryDto;
 import org.lonelyproject.userprofileservice.dto.InterestDto;
@@ -42,7 +43,6 @@ import org.lonelyproject.userprofileservice.repository.CloudItemRepository;
 import org.lonelyproject.userprofileservice.repository.ProfileMatchRepository;
 import org.lonelyproject.userprofileservice.repository.ProfileTraitRepository;
 import org.lonelyproject.userprofileservice.repository.UserProfileRepository;
-import org.lonelyproject.userprofileservice.security.UserAuth;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package org.lonelyproject.userprofileservice.security;
+package org.lonelyproject.auth.dto;
 
 import java.util.ArrayList;
 import java.util.Collection;

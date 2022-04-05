@@ -1,4 +1,4 @@
-package org.lonelyproject.userprofileservice.security;
+package org.lonelyproject.auth.config;
 
 import org.lonelyproject.userprofileservice.enums.UserRole;
 

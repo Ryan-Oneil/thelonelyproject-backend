@@ -1,11 +1,11 @@
 package org.lonelyproject.chatservice.config;
 
-import static org.lonelyproject.userprofileservice.security.SecurityConstants.HEADER_STRING;
+import static org.lonelyproject.auth.config.SecurityConstants.HEADER_STRING;
 
 import com.google.firebase.auth.FirebaseAuthException;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import org.lonelyproject.userprofileservice.security.FirebaseAuthorizationFilter;
+import org.lonelyproject.auth.FirebaseAuthorizationFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

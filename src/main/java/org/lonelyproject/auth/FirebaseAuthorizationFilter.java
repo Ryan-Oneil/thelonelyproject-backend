@@ -1,8 +1,8 @@
-package org.lonelyproject.userprofileservice.security;
+package org.lonelyproject.auth;
 
-import static org.lonelyproject.userprofileservice.security.SecurityConstants.DEFAULT_USER_ROLE;
-import static org.lonelyproject.userprofileservice.security.SecurityConstants.HEADER_STRING;
-import static org.lonelyproject.userprofileservice.security.SecurityConstants.JWT_ROLE_KEY;
+import static org.lonelyproject.auth.config.SecurityConstants.DEFAULT_USER_ROLE;
+import static org.lonelyproject.auth.config.SecurityConstants.HEADER_STRING;
+import static org.lonelyproject.auth.config.SecurityConstants.JWT_ROLE_KEY;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -13,6 +13,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.lonelyproject.auth.dto.UserAuth;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;

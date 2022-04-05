@@ -1,8 +1,8 @@
-package org.lonelyproject.userprofileservice.config;
+package org.lonelyproject.auth.config;
 
-import org.lonelyproject.userprofileservice.security.FirebaseAuthorizationFilter;
-import org.lonelyproject.userprofileservice.security.RestAccessDeniedHandler;
-import org.lonelyproject.userprofileservice.security.RestAuthenticationEntryPoint;
+import org.lonelyproject.auth.FirebaseAuthorizationFilter;
+import org.lonelyproject.auth.RestAccessDeniedHandler;
+import org.lonelyproject.auth.RestAuthenticationEntryPoint;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,8 +28,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
-//           .requiresChannel().anyRequest().requiresSecure()
-//           .and()
             .exceptionHandling()
             .authenticationEntryPoint(restAuthenticationEntryPoint)
             .accessDeniedHandler(restAccessDeniedHandler)
