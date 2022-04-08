@@ -8,13 +8,13 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.lonelyproject.backend.exception.ResourceNotFound;
-import org.lonelyproject.backend.security.UserAuth;
-import org.lonelyproject.backend.service.BaseServiceTest;
+import org.lonelyproject.auth.dto.UserAuth;
 import org.lonelyproject.chatservice.dto.ChatMessageDto;
 import org.lonelyproject.chatservice.dto.ChatRoomDto;
 import org.lonelyproject.chatservice.entities.ChatRoom;
 import org.lonelyproject.chatservice.enums.ChatRoomType;
+import org.lonelyproject.userprofileservice.exception.ResourceNotFound;
+import org.lonelyproject.userprofileservice.service.BaseServiceTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 
