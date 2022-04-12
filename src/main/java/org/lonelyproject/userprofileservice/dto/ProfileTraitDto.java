@@ -2,15 +2,16 @@ package org.lonelyproject.userprofileservice.dto;
 
 import java.io.Serializable;
 
-public class InterestDto implements Serializable {
+public class ProfileTraitDto implements Serializable {
 
     private int id;
     private String name;
+    private String icon;
 
-    public InterestDto() {
+    public ProfileTraitDto() {
     }
 
-    public InterestDto(int id, String name) {
+    public ProfileTraitDto(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -29,6 +30,14 @@ public class InterestDto implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     @Override

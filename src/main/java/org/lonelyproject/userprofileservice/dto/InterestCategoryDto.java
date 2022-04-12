@@ -7,12 +7,12 @@ public class InterestCategoryDto implements Serializable {
 
     private int id;
     private String name;
-    private List<InterestDto> interests;
+    private List<ProfileTraitDto> interests;
 
     public InterestCategoryDto() {
     }
 
-    public InterestCategoryDto(int id, String name, List<InterestDto> interests) {
+    public InterestCategoryDto(int id, String name, List<ProfileTraitDto> interests) {
         this.id = id;
         this.name = name;
         this.interests = interests;
@@ -34,11 +34,11 @@ public class InterestCategoryDto implements Serializable {
         this.name = name;
     }
 
-    public List<InterestDto> getInterests() {
+    public List<ProfileTraitDto> getInterests() {
         return interests;
     }
 
-    public void setInterests(List<InterestDto> interests) {
+    public void setInterests(List<ProfileTraitDto> interests) {
         this.interests = interests;
     }
 

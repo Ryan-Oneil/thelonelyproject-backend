@@ -6,9 +6,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.lonelyproject.auth.dto.UserAuth;
 import org.lonelyproject.userprofileservice.dto.InterestCategoryDto;
-import org.lonelyproject.userprofileservice.dto.InterestDto;
 import org.lonelyproject.userprofileservice.dto.ProfileMediaDto;
+import org.lonelyproject.userprofileservice.dto.ProfileTraitDto;
 import org.lonelyproject.userprofileservice.dto.PromptDto;
+import org.lonelyproject.userprofileservice.dto.SpotifyArtistDto;
 import org.lonelyproject.userprofileservice.dto.UploadedFile;
 import org.lonelyproject.userprofileservice.dto.UserProfileDto;
 import org.lonelyproject.userprofileservice.enums.ConnectionStatus;
@@ -111,7 +112,7 @@ public class UserController {
     }
 
     @PostMapping("/profile/interest")
-    public void addInterestToProfile(@RequestBody InterestDto interestDto, @AuthenticationPrincipal UserAuth auth) {
+    public void addInterestToProfile(@RequestBody ProfileTraitDto interestDto, @AuthenticationPrincipal UserAuth auth) {
         userService.addInterestToUserProfile(auth.getId(), interestDto);
     }
 
@@ -143,5 +144,10 @@ public class UserController {
     @GetMapping("/profile/matches")
     public List<UserProfileDto> getMatches(@AuthenticationPrincipal UserAuth auth) {
         return matchingService.getMatches(auth.getId());
+    }
+
+    @PutMapping("/profile/spotify/{token}")
+    public List<SpotifyArtistDto> integrateSpotify(@PathVariable String token, @AuthenticationPrincipal UserAuth auth) {
+        return userService.integrateSpotifyWithProfile(auth.getId(), token);
     }
 }

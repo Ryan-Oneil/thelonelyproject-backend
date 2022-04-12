@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.lonelyproject.auth.dto.UserAuth;
 import org.lonelyproject.userprofileservice.api.BackBlazeAPI;
 import org.lonelyproject.userprofileservice.dto.InterestCategoryDto;
-import org.lonelyproject.userprofileservice.dto.InterestDto;
 import org.lonelyproject.userprofileservice.dto.ProfileMediaDto;
+import org.lonelyproject.userprofileservice.dto.ProfileTraitDto;
 import org.lonelyproject.userprofileservice.dto.PromptDto;
 import org.lonelyproject.userprofileservice.dto.UploadedFile;
 import org.lonelyproject.userprofileservice.dto.UserProfileDto;
@@ -143,7 +143,7 @@ class UserServiceTest extends BaseServiceTest {
     @Test
     @Transactional
     void addInterestToUserProfileTest() {
-        InterestDto interestDto = new InterestDto(2, "test");
+        ProfileTraitDto interestDto = new ProfileTraitDto(2, "test");
         userService.addInterestToUserProfile("1", interestDto);
 
         UserProfile userProfile = userService.getUserProfile("1");
@@ -154,7 +154,7 @@ class UserServiceTest extends BaseServiceTest {
     @Test
     @Transactional
     void addInterestToUserProfileThrowsExceptionTest() {
-        InterestDto interestDto = new InterestDto(9, "test9");
+        ProfileTraitDto interestDto = new ProfileTraitDto(9, "test9");
 
         ProfileException exception = Assertions.assertThrows(ProfileException.class,
             () -> userService.addInterestToUserProfile("3", interestDto));
