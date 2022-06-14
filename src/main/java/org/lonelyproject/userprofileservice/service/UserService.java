@@ -11,17 +11,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.lonelyproject.auth.dto.UserAuth;
 import org.lonelyproject.userprofileservice.api.BackBlazeAPI;
+import org.lonelyproject.userprofileservice.api.SpotifyAPI;
 import org.lonelyproject.userprofileservice.dto.InterestCategoryDto;
-import org.lonelyproject.userprofileservice.dto.InterestDto;
 import org.lonelyproject.userprofileservice.dto.ProfileConnectionDto;
 import org.lonelyproject.userprofileservice.dto.ProfileMediaDto;
+import org.lonelyproject.userprofileservice.dto.ProfileTraitDto;
 import org.lonelyproject.userprofileservice.dto.PromptDto;
+import org.lonelyproject.userprofileservice.dto.SpotifyArtistDto;
 import org.lonelyproject.userprofileservice.dto.UploadedFile;
 import org.lonelyproject.userprofileservice.dto.UserProfileDto;
+import org.lonelyproject.userprofileservice.entities.Artist;
 import org.lonelyproject.userprofileservice.entities.CloudItemDetails;
+import org.lonelyproject.userprofileservice.entities.Genre;
 import org.lonelyproject.userprofileservice.entities.Interest;
 import org.lonelyproject.userprofileservice.entities.InterestCategory;
 import org.lonelyproject.userprofileservice.entities.ProfileConnection;
@@ -32,8 +38,9 @@ import org.lonelyproject.userprofileservice.entities.User;
 import org.lonelyproject.userprofileservice.entities.UserInterest;
 import org.lonelyproject.userprofileservice.entities.UserProfile;
 import org.lonelyproject.userprofileservice.entities.UserPrompt;
+import org.lonelyproject.userprofileservice.entities.UserSpotifyArtist;
 import org.lonelyproject.userprofileservice.entities.supers.CloudItem;
-import org.lonelyproject.userprofileservice.entities.supers.ProfileTrait;
+import org.lonelyproject.userprofileservice.entities.supers.ProfileTraitRelation;
 import org.lonelyproject.userprofileservice.enums.ConnectionStatus;
 import org.lonelyproject.userprofileservice.enums.MediaType;
 import org.lonelyproject.userprofileservice.enums.UserRole;
@@ -51,13 +58,13 @@ public class UserService {
 
     private final UserProfileRepository userProfileRepository;
     private final CloudItemRepository<CloudItem> cloudItemRepository;
-    private final ProfileTraitRepository<ProfileTrait> profileTraitRepository;
+    private final ProfileTraitRepository<ProfileTraitRelation> profileTraitRepository;
     private final ProfileMatchRepository profileMatchRepository;
     private final BackBlazeAPI backBlazeAPI;
     private final String cdnUrl;
 
     public UserService(UserProfileRepository userProfileRepository, CloudItemRepository<CloudItem> cloudItemRepository,
-        ProfileTraitRepository<ProfileTrait> profileTraitRepository, ProfileMatchRepository profileMatchRepository, BackBlazeAPI backBlazeAPI,
+        ProfileTraitRepository<ProfileTraitRelation> profileTraitRepository, ProfileMatchRepository profileMatchRepository, BackBlazeAPI backBlazeAPI,
         @Value("${cdn.url}") String cdnUrl) {
         this.userProfileRepository = userProfileRepository;
         this.cloudItemRepository = cloudItemRepository;
@@ -171,7 +178,7 @@ public class UserService {
         return mapList(categories, InterestCategoryDto.class);
     }
 
-    public void addInterestToUserProfile(String userId, InterestDto interestDto) {
+    public void addInterestToUserProfile(String userId, ProfileTraitDto interestDto) {
         if (profileTraitRepository.getTotalProfileInterests(userId) >= 8) {
             throw new ProfileException("You can only have 8 interests");
         }
@@ -252,6 +259,31 @@ public class UserService {
 
         userProfileRepository.save(profileConnection.getConnector());
         profileMatchRepository.deleteByMatchAndTarget(connectorId, targetId);
+    }
+
+    public List<SpotifyArtistDto> integrateSpotifyWithProfile(String userAuth, String spotifyToken) {
+        UserProfile userProfile = getUserProfile(userAuth);
+        List<SpotifyArtistDto> artistDtos = SpotifyAPI.fetchArtist(spotifyToken);
+
+        List<UserSpotifyArtist> profileArtists = artistDtos.stream()
+            .map(spotifyArtistDto -> new UserSpotifyArtist(userProfile, getOrCreateArtist(spotifyArtistDto))).toList();
+
+        profileTraitRepository.deleteAllUserSpotifyArtists(userAuth);
+        profileTraitRepository.saveAll(profileArtists);
+
+        return artistDtos;
+    }
+
+    public Artist getOrCreateArtist(SpotifyArtistDto spotifyArtistDto) {
+        return profileTraitRepository.getArtistByName(spotifyArtistDto.getName()).orElseGet(() -> {
+            Set<Genre> genres = spotifyArtistDto.getGenres().stream().map(this::getOrCreateGenre).collect(Collectors.toSet());
+
+            return new Artist(spotifyArtistDto.getName(), spotifyArtistDto.getImages().get(0).get("url").toString(), genres);
+        });
+    }
+
+    public Genre getOrCreateGenre(String genreName) {
+        return profileTraitRepository.getGenreByName(genreName).orElseGet(() -> new Genre(genreName));
     }
 
     public String getCdnUrl(CloudItemDetails cloudItemDetails) {

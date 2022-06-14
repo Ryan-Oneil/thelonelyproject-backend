@@ -7,13 +7,13 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.lonelyproject.userprofileservice.entities.Interest;
 import org.lonelyproject.userprofileservice.entities.InterestCategory;
-import org.lonelyproject.userprofileservice.entities.supers.ProfileTrait;
+import org.lonelyproject.userprofileservice.entities.supers.ProfileTraitRelation;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class ProfileTraitRepositoryTest extends BaseRepository {
 
     @Autowired
-    private ProfileTraitRepository<ProfileTrait> profileTraitRepository;
+    private ProfileTraitRepository<ProfileTraitRelation> profileTraitRepository;
 
     @Test
     void findAllInterestCategoriesTest() {

@@ -17,8 +17,7 @@ public class ProfileTrait implements Serializable {
     @Column(unique = true, nullable = false)
     private String name;
 
-    public ProfileTrait(int id, String name) {
-        this.id = id;
+    public ProfileTrait(String name) {
         this.name = name;
     }
 

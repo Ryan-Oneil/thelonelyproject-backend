@@ -3,15 +3,17 @@ package org.lonelyproject.userprofileservice.repository;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
+import org.lonelyproject.userprofileservice.entities.Artist;
+import org.lonelyproject.userprofileservice.entities.Genre;
 import org.lonelyproject.userprofileservice.entities.Interest;
 import org.lonelyproject.userprofileservice.entities.InterestCategory;
 import org.lonelyproject.userprofileservice.entities.Prompt;
-import org.lonelyproject.userprofileservice.entities.supers.ProfileTrait;
+import org.lonelyproject.userprofileservice.entities.supers.ProfileTraitRelation;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-public interface ProfileTraitRepository<T extends ProfileTrait> extends CrudRepository<T, Integer> {
+public interface ProfileTraitRepository<T extends ProfileTraitRelation> extends CrudRepository<T, Integer> {
 
     @Query("select c from InterestCategory  c")
     List<InterestCategory> findAllInterestCategories();
@@ -38,4 +40,15 @@ public interface ProfileTraitRepository<T extends ProfileTrait> extends CrudRepo
 
     @Query("select count(ui) from UserInterest ui where ui.profileTraitId.userProfileId = ?1")
     Integer getTotalProfileInterests(String profileId);
+
+    @Query("select distinct g from Genre g where g.name = ?1")
+    Optional<Genre> getGenreByName(String name);
+
+    @Query("select distinct a from Artist a where a.name = ?1")
+    Optional<Artist> getArtistByName(String name);
+
+    @Transactional
+    @Modifying
+    @Query("delete from UserSpotifyArtist s where s.profileTraitId.userProfileId = ?1")
+    void deleteAllUserSpotifyArtists(String userId);
 }

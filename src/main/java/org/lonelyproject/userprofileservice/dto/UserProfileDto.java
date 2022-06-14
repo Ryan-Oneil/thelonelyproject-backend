@@ -11,9 +11,9 @@ public final class UserProfileDto implements Serializable {
     private String about;
     private String profilePictureUrl;
     private List<ProfileMediaDto> medias = new ArrayList<>();
-    private List<InterestDto> interests = new ArrayList<>();
+    private List<ProfileTraitDto> interests = new ArrayList<>();
     private List<PromptDto> prompts = new ArrayList<>();
-    private List<String> spotifyArtists = new ArrayList<>();
+    private List<ProfileTraitDto> spotifyArtists = new ArrayList<>();
     private ProfileConnectionDto connection;
 
     public UserProfileDto() {
@@ -66,11 +66,11 @@ public final class UserProfileDto implements Serializable {
         this.medias = medias;
     }
 
-    public List<InterestDto> getInterests() {
+    public List<ProfileTraitDto> getInterests() {
         return interests;
     }
 
-    public void setInterests(List<InterestDto> interests) {
+    public void setInterests(List<ProfileTraitDto> interests) {
         this.interests = interests;
     }
 
@@ -82,11 +82,11 @@ public final class UserProfileDto implements Serializable {
         this.prompts = prompts;
     }
 
-    public List<String> getSpotifyArtists() {
+    public List<ProfileTraitDto> getSpotifyArtists() {
         return spotifyArtists;
     }
 
-    public void setSpotifyArtists(List<String> spotifyArtists) {
+    public void setSpotifyArtists(List<ProfileTraitDto> spotifyArtists) {
         this.spotifyArtists = spotifyArtists;
     }
 

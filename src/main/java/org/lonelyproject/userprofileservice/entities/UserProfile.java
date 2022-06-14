@@ -57,6 +57,10 @@ public class UserProfile {
     @Fetch(value = FetchMode.SUBSELECT)
     private List<ProfileConnection> receivedConnections = new ArrayList<>();
 
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "userProfile")
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<UserSpotifyArtist> spotifyArtists;
+
     public UserProfile(String id) {
         this.id = id;
     }
@@ -161,5 +165,13 @@ public class UserProfile {
 
     public void setReceivedConnections(List<ProfileConnection> receivedConnections) {
         this.receivedConnections = receivedConnections;
+    }
+
+    public List<UserSpotifyArtist> getSpotifyArtists() {
+        return spotifyArtists;
+    }
+
+    public void setSpotifyArtists(List<UserSpotifyArtist> spotifyArtists) {
+        this.spotifyArtists = spotifyArtists;
     }
 }
