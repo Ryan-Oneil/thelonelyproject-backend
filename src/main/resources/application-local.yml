@@ -14,6 +14,8 @@ spring:
     username: lonelyproject
     password: lonelyproject
   ssl: false
+  liquibase:
+    default-schema: public
 
 cdn:
   url: https://cdn.lonelyproject.org/file
