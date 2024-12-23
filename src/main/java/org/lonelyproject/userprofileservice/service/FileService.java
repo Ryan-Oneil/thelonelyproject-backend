@@ -1,5 +1,19 @@
 package org.lonelyproject.userprofileservice.service;
 
+import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.tomcat.util.http.fileupload.FileItemIterator;
+import org.apache.tomcat.util.http.fileupload.FileItemStream;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
+import org.lonelyproject.chatservice.dto.Formdata;
+import org.lonelyproject.userprofileservice.dto.UploadedFile;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,19 +22,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.bind.DatatypeConverter;
-import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.tomcat.util.http.fileupload.FileItemIterator;
-import org.apache.tomcat.util.http.fileupload.FileItemStream;
-import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
-import org.lonelyproject.userprofileservice.dto.UploadedFile;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 @Service
 public class FileService {
@@ -33,8 +35,9 @@ public class FileService {
         this.tempDirectory = tempDirectory;
     }
 
-    public List<UploadedFile> handleFileUpload(HttpServletRequest request, long uploadLimit) throws IOException {
+    public Formdata handleFileUpload(HttpServletRequest request, long uploadLimit) throws IOException {
         ArrayList<UploadedFile> uploadedFiles = new ArrayList<>();
+        String message = "";
         ServletFileUpload upload = new ServletFileUpload();
         upload.setSizeMax(uploadLimit);
 
@@ -49,7 +52,8 @@ public class FileService {
         while (iterator.hasNext()) {
             FileItemStream item = iterator.next();
 
-            if (item.isFormField()) {
+            if (item.isFormField() && item.getFieldName().equals("message")) {
+                message = Streams.asString(item.openStream(), "UTF-8");
                 continue;
             }
             String fileName = UUID.randomUUID() + "." + getExtensionType(item.getName());
@@ -60,7 +64,7 @@ public class FileService {
         if (uploadedFiles.isEmpty()) {
             throw new FileNotFoundException("No files uploaded");
         }
-        return uploadedFiles;
+        return new Formdata(message, uploadedFiles);
     }
 
     public String getExtensionType(String originalFileName) {
@@ -82,9 +86,9 @@ public class FileService {
         String fileName = UUID.randomUUID() + "." + getExtensionType(originalFileName);
         File newFile = new File("%s/%s".formatted(dest, fileName));
 
-        DigestInputStream dis = new DigestInputStream(inputStream, md);
-        //Copy file to new file
-        FileUtils.copyInputStreamToFile(dis, newFile);
+        try(DigestInputStream dis = new DigestInputStream(inputStream, md)) {
+            FileUtils.copyInputStreamToFile(dis, newFile);
+        }
 
         String sha1 = null;
         if (md != null) {
