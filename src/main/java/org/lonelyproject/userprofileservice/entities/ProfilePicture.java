@@ -2,10 +2,10 @@ package org.lonelyproject.userprofileservice.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
-import org.lonelyproject.userprofileservice.entities.supers.CloudItem;
+import org.lonelyproject.userprofileservice.entities.supers.MediaCloudItem;
 
 @Entity
-public class ProfilePicture extends CloudItem {
+public class ProfilePicture extends MediaCloudItem {
 
     @OneToOne
     private UserProfile userProfile;
@@ -13,12 +13,12 @@ public class ProfilePicture extends CloudItem {
     public ProfilePicture() {
     }
 
-    public ProfilePicture(CloudItemDetails itemDetails, String url) {
-        super(itemDetails, url);
+    public ProfilePicture(CloudItemDetails itemDetails) {
+        super(itemDetails);
     }
 
-    public ProfilePicture(CloudItemDetails itemDetails, String url, UserProfile userProfile) {
-        super(itemDetails, url);
+    public ProfilePicture(CloudItemDetails itemDetails, UserProfile userProfile) {
+        super(itemDetails);
         this.userProfile = userProfile;
     }
 

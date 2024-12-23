@@ -41,7 +41,7 @@ class UserServiceTest extends BaseServiceTest {
 
     @BeforeEach
     void setUp() {
-        Mockito.when(backBlazeAPI.uploadToProfileBucket(ArgumentMatchers.any())).thenReturn(new CloudItemDetails("ase", "test.png", "test", 0L));
+        Mockito.when(backBlazeAPI.uploadToProfileBucket(ArgumentMatchers.any())).thenReturn(new CloudItemDetails("ase", "test.png", "test", 0L, "url"));
     }
 
     @Test
@@ -114,7 +114,7 @@ class UserServiceTest extends BaseServiceTest {
 
         assertThat(url).isNotBlank();
         assertThat(userProfile.getPicture()).isNotNull();
-        assertThat(userProfile.getPicture().getUrl()).isEqualTo(url);
+        assertThat(userProfile.getPicture().getOriginal().getUrl()).isEqualTo(url);
     }
 
     @Test
@@ -130,7 +130,7 @@ class UserServiceTest extends BaseServiceTest {
         UserProfile userProfile = userService.getUserProfile("2");
 
         assertThat(mediaDtos).isNotEmpty();
-        assertThat(userProfile.getMedias().size()).isEqualTo(1);
+        assertThat(userProfile.getMedias()).hasSize(1);
     }
 
     @Test
@@ -148,7 +148,7 @@ class UserServiceTest extends BaseServiceTest {
 
         UserProfile userProfile = userService.getUserProfile("1");
 
-        assertThat(userProfile.getInterests().size()).isEqualTo(1);
+        assertThat(userProfile.getInterests()).hasSize(1);
     }
 
     @Test
@@ -212,7 +212,7 @@ class UserServiceTest extends BaseServiceTest {
     void getConnectionsByStatusTest() {
         List<UserProfileDto> profileDtos = userService.getConnectionsByStatus("1", ConnectionStatus.PENDING);
 
-        assertThat(profileDtos.size()).isEqualTo(1);
+        assertThat(profileDtos).hasSize(1);
     }
 
     @Test

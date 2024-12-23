@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.lonelyproject.userprofileservice.entities.ProfileMedia;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class CloudItemRepositoryTest extends BaseRepository {
+class MediaCloudItemRepositoryTest extends BaseRepository {
 
     @Autowired
     private CloudItemRepository cloudItemRepository;

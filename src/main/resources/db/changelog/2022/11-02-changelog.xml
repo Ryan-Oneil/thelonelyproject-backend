@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+  <changeSet id="1649690197469-1" author="Ryan (generated)">
+    <createTable tableName="artist">
+      <column autoIncrement="true" name="id" type="INT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_artist"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="icon" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1649690197469-2" author="Ryan (generated)">
+    <createTable tableName="artist_genre">
+      <column name="artist_id" type="INT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_artist_genre"/>
+      </column>
+      <column name="genre_id" type="INT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_artist_genre"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1649690197469-3" author="Ryan (generated)">
+    <createTable tableName="genre">
+      <column autoIncrement="true" name="id" type="INT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_genre"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1649690197469-4" author="Ryan (generated)">
+    <createTable tableName="user_spotify_artist">
+      <column name="user_profile_id" type="VARCHAR(255)">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_userspotifyartist"/>
+      </column>
+      <column name="trait_id" type="INT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_userspotifyartist"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1649690197469-5" author="Ryan (generated)">
+    <addUniqueConstraint columnNames="name" constraintName="uc_artist_name" tableName="artist"/>
+  </changeSet>
+  <changeSet id="1649690197469-6" author="Ryan (generated)">
+    <addUniqueConstraint columnNames="name" constraintName="uc_genre_name" tableName="genre"/>
+  </changeSet>
+  <changeSet id="1649690197469-7" author="Ryan (generated)">
+    <addForeignKeyConstraint baseColumnNames="trait_id" baseTableName="user_spotify_artist"
+      constraintName="FK_USERSPOTIFYARTIST_ON_TRAIT" referencedColumnNames="id"
+      referencedTableName="artist"/>
+  </changeSet>
+  <changeSet id="1649690197469-8" author="Ryan (generated)">
+    <addForeignKeyConstraint baseColumnNames="user_profile_id" baseTableName="user_spotify_artist"
+      constraintName="FK_USERSPOTIFYARTIST_ON_USER_PROFILE" referencedColumnNames="user_id"
+      referencedTableName="user_profile"/>
+  </changeSet>
+  <changeSet id="1649690197469-9" author="Ryan (generated)">
+    <addForeignKeyConstraint baseColumnNames="artist_id" baseTableName="artist_genre"
+      constraintName="fk_artgen_on_artist" referencedColumnNames="id" referencedTableName="artist"/>
+  </changeSet>
+  <changeSet id="1649690197469-10" author="Ryan (generated)">
+    <addForeignKeyConstraint baseColumnNames="genre_id" baseTableName="artist_genre"
+      constraintName="fk_artgen_on_genre" referencedColumnNames="id" referencedTableName="genre"/>
+  </changeSet>
+
+</databaseChangeLog>

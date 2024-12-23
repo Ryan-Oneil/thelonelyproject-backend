@@ -9,7 +9,7 @@ public final class UserProfileDto implements Serializable {
     private String id;
     private String name;
     private String about;
-    private String profilePictureUrl;
+    private String profilePictureOriginalUrl;
     private List<ProfileMediaDto> medias = new ArrayList<>();
     private List<ProfileTraitDto> interests = new ArrayList<>();
     private List<PromptDto> prompts = new ArrayList<>();
@@ -19,11 +19,11 @@ public final class UserProfileDto implements Serializable {
     public UserProfileDto() {
     }
 
-    public UserProfileDto(String id, String name, String about, String profilePictureUrl) {
+    public UserProfileDto(String id, String name, String about, String profilePictureOriginalUrl) {
         this.id = id;
         this.name = name;
         this.about = about;
-        this.profilePictureUrl = profilePictureUrl;
+        this.profilePictureOriginalUrl = profilePictureOriginalUrl;
     }
 
     public String getId() {
@@ -50,12 +50,12 @@ public final class UserProfileDto implements Serializable {
         this.about = about;
     }
 
-    public String getProfilePictureUrl() {
-        return profilePictureUrl;
+    public String getProfilePictureOriginalUrl() {
+        return profilePictureOriginalUrl;
     }
 
-    public void setProfilePictureUrl(String profilePictureUrl) {
-        this.profilePictureUrl = profilePictureUrl;
+    public void setProfilePictureOriginalUrl(String profilePictureOriginalUrl) {
+        this.profilePictureOriginalUrl = profilePictureOriginalUrl;
     }
 
     public List<ProfileMediaDto> getMedias() {
@@ -104,7 +104,7 @@ public final class UserProfileDto implements Serializable {
             "id='" + id + '\'' +
             ", name='" + name + '\'' +
             ", about='" + about + '\'' +
-            ", profilePictureUrl='" + profilePictureUrl + '\'' +
+            ", profilePictureUrl='" + profilePictureOriginalUrl + '\'' +
             ", medias=" + medias +
             ", interests=" + interests +
             ", prompts=" + prompts +

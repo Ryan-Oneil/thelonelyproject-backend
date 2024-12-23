@@ -5,8 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
 
 @Entity
+@Table(indexes = @Index(columnList = "url"))
 public class CloudItemDetails {
 
     @Id
@@ -25,12 +28,15 @@ public class CloudItemDetails {
     @Column(nullable = false)
     private Long size;
 
+    @Column(nullable = false, unique = true)
+    private String url;
 
-    public CloudItemDetails(String externalId, String name, String containerName, Long size) {
+    public CloudItemDetails(String externalId, String name, String containerName, Long size, String url) {
         this.externalId = externalId;
         this.name = name;
         this.containerName = containerName;
         this.size = size;
+        this.url = url;
     }
 
     public CloudItemDetails() {
@@ -74,5 +80,13 @@ public class CloudItemDetails {
 
     public void setSize(Long size) {
         this.size = size;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

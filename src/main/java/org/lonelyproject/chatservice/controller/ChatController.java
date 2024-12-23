@@ -1,24 +1,20 @@
 package org.lonelyproject.chatservice.controller;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
 import org.lonelyproject.auth.dto.UserAuth;
 import org.lonelyproject.chatservice.dto.ChatMessageDto;
 import org.lonelyproject.chatservice.dto.ChatRoomDto;
+import org.lonelyproject.chatservice.dto.Formdata;
 import org.lonelyproject.chatservice.service.ChatService;
-import org.lonelyproject.userprofileservice.dto.UploadedFile;
 import org.lonelyproject.userprofileservice.service.FileService;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/chat")
@@ -46,9 +42,9 @@ public class ChatController {
     @PostMapping("/{chatID}/message/media")
     public ChatMessageDto uploadChatMedia(@PathVariable UUID chatID, @AuthenticationPrincipal UserAuth auth, HttpServletRequest request)
         throws IOException {
-        UploadedFile file = fileService.handleFileUpload(request, -1).get(0);
+        Formdata formdata = fileService.handleFileUpload(request, -1);
 
-        return chatService.registerMediaMessageToChat(file, chatID, auth);
+        return chatService.registerMediaMessageToChat(formdata, chatID, auth);
     }
 
     @GetMapping("/chatrooms")

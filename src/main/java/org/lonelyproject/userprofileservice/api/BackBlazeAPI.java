@@ -13,6 +13,7 @@ import org.lonelyproject.userprofileservice.config.properties.BucketInfo;
 import org.lonelyproject.userprofileservice.dto.UploadedFile;
 import org.lonelyproject.userprofileservice.entities.CloudItemDetails;
 import org.lonelyproject.userprofileservice.exception.UploadException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,9 +24,12 @@ public class BackBlazeAPI {
     private final B2StorageClient client;
     private final BucketInfo bucketInfo;
 
-    public BackBlazeAPI(B2StorageClient client, BucketInfo bucketInfo) {
+    private final String cdnUrl;
+
+    public BackBlazeAPI(B2StorageClient client, BucketInfo bucketInfo,  @Value("${cdn.url}") String cdnUrl) {
         this.client = client;
         this.bucketInfo = bucketInfo;
+        this.cdnUrl = cdnUrl;
     }
 
     public B2FileVersion uploadToBucket(String bucketId, UploadedFile uploadedFile) {
@@ -48,7 +52,7 @@ public class BackBlazeAPI {
         B2FileVersion file = uploadToBucket(bucketInfo.avatars().id(), uploadedFile);
 
         return new CloudItemDetails(file.getFileId(), file.getFileName(),
-            bucketInfo.avatars().name(), file.getContentLength());
+            bucketInfo.avatars().name(), file.getContentLength(), getCdnUrl(bucketInfo.avatars().name(), file.getFileName()));
     }
 
     public void deleteFromBucket(String fileName, String fileId) {
@@ -57,5 +61,9 @@ public class BackBlazeAPI {
         } catch (B2Exception e) {
             logger.error("Error deleting item from Backblaze bucket", e);
         }
+    }
+
+    public String getCdnUrl(String bucketName, String fileName) {
+        return "%s/%s/%s".formatted(cdnUrl, bucketName, fileName);
     }
 }

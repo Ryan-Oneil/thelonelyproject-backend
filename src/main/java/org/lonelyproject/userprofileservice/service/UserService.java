@@ -39,7 +39,7 @@ import org.lonelyproject.userprofileservice.entities.UserInterest;
 import org.lonelyproject.userprofileservice.entities.UserProfile;
 import org.lonelyproject.userprofileservice.entities.UserPrompt;
 import org.lonelyproject.userprofileservice.entities.UserSpotifyArtist;
-import org.lonelyproject.userprofileservice.entities.supers.CloudItem;
+import org.lonelyproject.userprofileservice.entities.supers.MediaCloudItem;
 import org.lonelyproject.userprofileservice.entities.supers.ProfileTraitRelation;
 import org.lonelyproject.userprofileservice.enums.ConnectionStatus;
 import org.lonelyproject.userprofileservice.enums.MediaType;
@@ -50,28 +50,24 @@ import org.lonelyproject.userprofileservice.repository.CloudItemRepository;
 import org.lonelyproject.userprofileservice.repository.ProfileMatchRepository;
 import org.lonelyproject.userprofileservice.repository.ProfileTraitRepository;
 import org.lonelyproject.userprofileservice.repository.UserProfileRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
     private final UserProfileRepository userProfileRepository;
-    private final CloudItemRepository<CloudItem> cloudItemRepository;
+    private final CloudItemRepository<MediaCloudItem> cloudItemRepository;
     private final ProfileTraitRepository<ProfileTraitRelation> profileTraitRepository;
     private final ProfileMatchRepository profileMatchRepository;
     private final BackBlazeAPI backBlazeAPI;
-    private final String cdnUrl;
 
-    public UserService(UserProfileRepository userProfileRepository, CloudItemRepository<CloudItem> cloudItemRepository,
-        ProfileTraitRepository<ProfileTraitRelation> profileTraitRepository, ProfileMatchRepository profileMatchRepository, BackBlazeAPI backBlazeAPI,
-        @Value("${cdn.url}") String cdnUrl) {
+    public UserService(UserProfileRepository userProfileRepository, CloudItemRepository<MediaCloudItem> cloudItemRepository,
+        ProfileTraitRepository<ProfileTraitRelation> profileTraitRepository, ProfileMatchRepository profileMatchRepository, BackBlazeAPI backBlazeAPI) {
         this.userProfileRepository = userProfileRepository;
         this.cloudItemRepository = cloudItemRepository;
         this.profileTraitRepository = profileTraitRepository;
         this.profileMatchRepository = profileMatchRepository;
         this.backBlazeAPI = backBlazeAPI;
-        this.cdnUrl = cdnUrl;
     }
 
     public UserProfile getUserProfile(String userId) {
@@ -134,17 +130,17 @@ public class UserService {
             deleteUserProfilePicture(userProfile);
         }
         CloudItemDetails cloudItemDetails = backBlazeAPI.uploadToProfileBucket(profilePicture);
-        ProfilePicture picture = new ProfilePicture(cloudItemDetails, getCdnUrl(cloudItemDetails));
+        ProfilePicture picture = new ProfilePicture(cloudItemDetails);
 
         userProfile.setPicture(picture);
         userProfileRepository.save(userProfile);
 
-        return picture.getUrl();
+        return cloudItemDetails.getUrl();
     }
 
     public void deleteUserProfilePicture(UserProfile userProfile) {
         ProfilePicture picture = userProfile.getPicture();
-        CloudItemDetails details = picture.getItemDetails();
+        CloudItemDetails details = picture.getOriginal();
 
         backBlazeAPI.deleteFromBucket(details.getName(), details.getExternalId());
         cloudItemRepository.delete(picture);
@@ -155,7 +151,7 @@ public class UserService {
             .map(uploadedFile -> {
                 CloudItemDetails details = backBlazeAPI.uploadToProfileBucket(uploadedFile);
 
-                return new ProfileMedia(details, getCdnUrl(details), MediaType.IMAGE, new UserProfile(userId));
+                return new ProfileMedia(details, MediaType.IMAGE, new UserProfile(userId));
             }).toList();
         cloudItemRepository.saveAll(medias);
 
@@ -166,7 +162,7 @@ public class UserService {
         ProfileMedia media = cloudItemRepository.findProfileMediaByIdAndUserProfile_Id(mediaId, userId)
             .orElseThrow(() -> new ResourceNotFound("This media doesn't exist"));
 
-        CloudItemDetails details = media.getItemDetails();
+        CloudItemDetails details = media.getOriginal();
 
         backBlazeAPI.deleteFromBucket(details.getName(), details.getExternalId());
         cloudItemRepository.delete(media);
@@ -284,10 +280,6 @@ public class UserService {
 
     public Genre getOrCreateGenre(String genreName) {
         return profileTraitRepository.getGenreByName(genreName).orElseGet(() -> new Genre(genreName));
-    }
-
-    public String getCdnUrl(CloudItemDetails cloudItemDetails) {
-        return "%s/%s/%s".formatted(cdnUrl, cloudItemDetails.getContainerName(), cloudItemDetails.getName());
     }
 
 }

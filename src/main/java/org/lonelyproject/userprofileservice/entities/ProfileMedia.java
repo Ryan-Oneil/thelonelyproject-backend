@@ -6,11 +6,11 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import org.lonelyproject.userprofileservice.entities.supers.CloudItem;
+import org.lonelyproject.userprofileservice.entities.supers.MediaCloudItem;
 import org.lonelyproject.userprofileservice.enums.MediaType;
 
 @Entity
-public class ProfileMedia extends CloudItem {
+public class ProfileMedia extends MediaCloudItem {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -23,8 +23,8 @@ public class ProfileMedia extends CloudItem {
     public ProfileMedia() {
     }
 
-    public ProfileMedia(CloudItemDetails itemDetails, String url, MediaType type, UserProfile userProfile) {
-        super(itemDetails, url);
+    public ProfileMedia(CloudItemDetails itemDetails, MediaType type, UserProfile userProfile) {
+        super(itemDetails);
         this.type = type;
         this.userProfile = userProfile;
     }

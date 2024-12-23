@@ -1,13 +1,9 @@
 package org.lonelyproject.chatservice.service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import javax.transaction.Transactional;
 import org.lonelyproject.auth.dto.UserAuth;
 import org.lonelyproject.chatservice.dto.ChatMessageDto;
 import org.lonelyproject.chatservice.dto.ChatRoomDto;
+import org.lonelyproject.chatservice.dto.Formdata;
 import org.lonelyproject.chatservice.entities.ChatMessage;
 import org.lonelyproject.chatservice.entities.ChatRoom;
 import org.lonelyproject.chatservice.entities.ChatRoomParticipant;
@@ -16,7 +12,6 @@ import org.lonelyproject.chatservice.enums.ChatRoomType;
 import org.lonelyproject.chatservice.repository.ChatMessageRepository;
 import org.lonelyproject.chatservice.repository.ChatRoomRepository;
 import org.lonelyproject.userprofileservice.api.BackBlazeAPI;
-import org.lonelyproject.userprofileservice.dto.UploadedFile;
 import org.lonelyproject.userprofileservice.dto.UserProfileDto;
 import org.lonelyproject.userprofileservice.entities.CloudItemDetails;
 import org.lonelyproject.userprofileservice.entities.User;
@@ -24,10 +19,15 @@ import org.lonelyproject.userprofileservice.entities.UserProfile;
 import org.lonelyproject.userprofileservice.exception.ResourceNotFound;
 import org.lonelyproject.userprofileservice.repository.UserProfileRepository;
 import org.lonelyproject.userprofileservice.util.ClassMapperUtil;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ChatService {
@@ -37,16 +37,14 @@ public class ChatService {
     private final SimpMessagingTemplate messagingTemplate;
     private final UserProfileRepository profileRepository;
     private final BackBlazeAPI backBlazeAPI;
-    private final String cdnUrl;
 
     public ChatService(ChatMessageRepository chatMessageRepository, ChatRoomRepository chatRoomRepository, SimpMessagingTemplate messagingTemplate,
-        UserProfileRepository profileRepository, BackBlazeAPI backBlazeAPI, @Value("${cdn.url}") String cdnUrl) {
+        UserProfileRepository profileRepository, BackBlazeAPI backBlazeAPI) {
         this.chatMessageRepository = chatMessageRepository;
         this.chatRoomRepository = chatRoomRepository;
         this.messagingTemplate = messagingTemplate;
         this.profileRepository = profileRepository;
         this.backBlazeAPI = backBlazeAPI;
-        this.cdnUrl = cdnUrl;
     }
 
     public ChatRoomDto getChatMessages(UUID roomId, String participantId) {
@@ -90,7 +88,7 @@ public class ChatService {
         if (chatRoomDto.getType() == ChatRoomType.DIRECT) {
             UserProfileDto receiver = participants.get(0);
 
-            chatRoomDto.setIcon(receiver.getProfilePictureUrl());
+            chatRoomDto.setIcon(receiver.getProfilePictureOriginalUrl());
             chatRoomDto.setName(receiver.getName());
             chatRoomDto.setAbout(receiver.getAbout());
         }
@@ -109,21 +107,6 @@ public class ChatService {
         notifyChatRoomParticipants(chatMessage);
     }
 
-    public ChatMessageDto registerMediaMessageToChat(UploadedFile file, UUID chatId, UserAuth sender) {
-        ChatRoom room = getChatRoomById(chatId);
-        validateChatParticipant(room, sender.getId());
-
-        CloudItemDetails itemDetails = backBlazeAPI.uploadToProfileBucket(file);
-        ChatSharedMedia chatSharedMedia = new ChatSharedMedia(itemDetails, getCdnUrl(itemDetails));
-        ChatMessage chatMessage = new ChatMessage(room, new User(sender.getId()), chatSharedMedia.getUrl(), new Date(), chatSharedMedia);
-
-        chatMessageRepository.save(chatMessage);
-
-        notifyChatRoomParticipants(chatMessage);
-
-        return ClassMapperUtil.mapClassIgnoreLazy(chatMessage, ChatMessageDto.class);
-    }
-
     public void notifyChatRoomParticipants(ChatMessage chatMessage) {
         ChatRoom room = chatMessage.getChatRoom();
         ChatRoomDto chatRoomDto = ClassMapperUtil.mapClassIgnoreLazy(room, ChatRoomDto.class);
@@ -135,6 +118,23 @@ public class ChatService {
             .filter(chatRoomParticipant -> !chatRoomParticipant.getId().getUserId().equals(chatMessage.getSender().getId()))
             .forEach(chatRoomParticipant -> messagingTemplate.convertAndSendToUser(chatRoomParticipant.getId().getUserId(), "/queue/messages",
                 chatRoomDto));
+    }
+
+    public ChatMessageDto registerMediaMessageToChat(Formdata upload, UUID chatId, UserAuth sender) {
+        ChatRoom room = getChatRoomById(chatId);
+        validateChatParticipant(room, sender.getId());
+
+        List<ChatSharedMedia> uploads = upload.getFiles().stream().map(uploadedFile -> {
+            CloudItemDetails itemDetails = backBlazeAPI.uploadToProfileBucket(uploadedFile);
+            return new ChatSharedMedia(itemDetails);
+        }).toList();
+
+        ChatMessage chatMessage = new ChatMessage(room, new User(sender.getId()), upload.getMessage(), new Date(), uploads);
+        chatMessageRepository.save(chatMessage);
+
+        notifyChatRoomParticipants(chatMessage);
+
+        return ClassMapperUtil.mapClassIgnoreLazy(chatMessage, ChatMessageDto.class);
     }
 
     public void validateChatParticipant(ChatRoom room, String senderId) {
@@ -171,7 +171,4 @@ public class ChatService {
         return ClassMapperUtil.mapClassIgnoreLazy(chatRoom, ChatRoomDto.class);
     }
 
-    public String getCdnUrl(CloudItemDetails cloudItemDetails) {
-        return "%s/%s/%s".formatted(cdnUrl, cloudItemDetails.getContainerName(), cloudItemDetails.getName());
-    }
 }
